@@ -9,6 +9,8 @@ import {
 	IStreamsDataFull
 } from '../interfaces/IStreams'
 
+type StreamSource = 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null
+
 export class Streams implements IStreams{
 
 	public static parseFull(data: IStreamsDataFull): Streams {
@@ -50,11 +52,12 @@ export class Streams implements IStreams{
     private streamId: string | null
     private streamLogo: string | null
     private streamName: string
-    private streamSource: 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null
+    private streamSource: StreamSource
     private streamStatus: string | null
     private streamType: number | null
     private streamTypeId: number | null
 
+	// TODO: Need restructuring so we dont have as many parameters
 	constructor(
 		id: number,
         enabled: boolean | null,
