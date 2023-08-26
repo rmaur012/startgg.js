@@ -1,11 +1,11 @@
 import {IAttendee, IAttendeeData, IAttendeeOptions} from './IAttendee'
-import {IEntrant, IEntrantOptions, IEntrantData} from './IEntrant'
-import {IGGSet, IGGSetOptions, IGGSetData} from './IGGSet'
+import {IEntrant, IEntrantData, IEntrantOptions} from './IEntrant'
+import {IGGSet, IGGSetData, IGGSetOptions} from './IGGSet'
 import {IPhaseGroup, IPhaseGroupData} from './IPhaseGroup'
 import {ISeedData} from './ISeed'
 
 export interface IPhase{
-	/*
+    /*
 	id: number
 	name: string
 	eventId: number
@@ -13,101 +13,101 @@ export interface IPhase{
 	groupCount: number
 	*/
 
-	getId(): number
-	getEventId(): number
-	getName(): string
-	getNumSeeds(): number
-	getGroupCount(): number	
-	getPhaseGroups(): Promise<IPhaseGroup[]>
-	getSets(options?: IGGSetOptions): Promise<IGGSet[]>
-	getEntrants(options?: IEntrantOptions): Promise<IEntrant[]>
-	getAttendees(options?: IAttendeeOptions): Promise<IAttendee[]>
-	getIncompleteSets(options?: IGGSetOptions): Promise<IGGSet[]>
-	getCompleteSets(options?: IGGSetOptions): Promise<IGGSet[]>
-	getSetsXMinutesBack(minutesBack: number, options: IGGSetOptions): Promise<IGGSet[]>
+    getId(): number
+    getEventId(): number
+    getName(): string
+    getNumSeeds(): number
+    getGroupCount(): number
+    getPhaseGroups(): Promise<IPhaseGroup[]>
+    getSets(options?: IGGSetOptions): Promise<IGGSet[]>
+    getEntrants(options?: IEntrantOptions): Promise<IEntrant[]>
+    getAttendees(options?: IAttendeeOptions): Promise<IAttendee[]>
+    getIncompleteSets(options?: IGGSetOptions): Promise<IGGSet[]>
+    getCompleteSets(options?: IGGSetOptions): Promise<IGGSet[]>
+    getSetsXMinutesBack(minutesBack: number, options: IGGSetOptions): Promise<IGGSet[]>
 
 }
 
 export interface IPhaseDataFull{
-	phase: IPhaseData 
+    phase: IPhaseData
 }
 
 export interface IPhaseDataSeeds{
-	event: IPhaseSeedData
+    event: IPhaseSeedData
 }
 
 export interface IPhaseDataSets{
-	event: IPhaseSetData
+    event: IPhaseSetData
 }
 
 export interface IPhaseDataEntrants{
-	event: IPhaseEntrantData
+    event: IPhaseEntrantData
 }
 
 export interface IPhasePaginatedData{
-	phase: {
-		phaseGroups: {
-			nodes: IPhaseGroupData[]
-		}
-	}
+    phase: {
+        phaseGroups: {
+            nodes: IPhaseGroupData[]
+        }
+    }
 }
 
 export interface IPhaseData{
-	id: number,
-	name: string,
-	numSeeds: number,
-	groupCount: number
+    id: number,
+    name: string,
+    numSeeds: number,
+    groupCount: number
 }
 
 export interface IPhaseSeedData{
-	phase: {
-		paginatedSeeds: {
-			pageInfo?: {
-				totalPages: number
-			}
-			nodes: ISeedData[]
-		} 
-	}
+    phase: {
+        paginatedSeeds: {
+            pageInfo?: {
+                totalPages: number
+            }
+            nodes: ISeedData[]
+        }
+    }
 }
 
 export interface IPhaseSetData{
-	id: number,
-	phaseGroups: {
-		paginatedSets: {
-			pageInfo?: { totalPages: number }
-			nodes: IGGSetData[]
-		}
-	}
+    id: number,
+    phaseGroups: {
+        paginatedSets: {
+            pageInfo?: { totalPages: number }
+            nodes: IGGSetData[]
+        }
+    }
 }
 
 export interface IPhaseEntrantData{
-	phase: {
-		paginatedSeeds: {
-			pageInfo?: {
-				totalPages: number
-			}
-			nodes: IEntrantData[]
-		} 
-	}
+    phase: {
+        paginatedSeeds: {
+            pageInfo?: {
+                totalPages: number
+            }
+            nodes: IEntrantData[]
+        }
+    }
 }
 
 export interface IPhasePhaseGroupData{
-	event: {
-		phaseGroups: IPhaseGroupData[]
-	}
+    event: {
+        phaseGroups: IPhaseGroupData[]
+    }
 }
 
 export interface IPhaseAttendeeData{
-	phase: {
-		paginatedSeeds: Array<{
-			pageInfo?: {
-				totalPages: number
-			}
-			nodes: {
-				entrant: {
-					participants: IAttendeeData[]
-				}
-			}
-		}>
-	}
+    phase: {
+        paginatedSeeds: {
+            pageInfo?: {
+                totalPages: number
+            }
+            nodes: {
+                entrant: {
+                    participants: IAttendeeData[]
+                }
+            }
+        }[]
+    }
 }

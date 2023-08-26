@@ -128,7 +128,7 @@ event{
 }
 name
 participants{
-	${attendee}	
+	${attendee}
 }
 skill
 `
@@ -156,7 +156,7 @@ slots(includeByes:false){
 export const set = `
 id
 completedAt
-displayScore  
+displayScore
 event{
     id
 }

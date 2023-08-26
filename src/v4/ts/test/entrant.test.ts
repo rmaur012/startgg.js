@@ -6,185 +6,185 @@ config({path: ROOT})
 import '../lib/util/ErrorHandler'
 
 import {expect} from 'chai'
-import {Entrant} from '../lib/models/Entrant'
 import {Attendee} from '../lib/models/Attendee'
+import {Entrant} from '../lib/models/Entrant'
 import Initializer from '../lib/util/Initializer'
 
 import * as testData from './data/player.testData'
 let player1: Entrant, player2: Entrant
 
 describe('startgg Player (Entrant) Singles', () => {
-	before(async () => {
-		Initializer(process.env.API_TOKEN!)
-		player1 = Entrant.parse(testData.player1Data)
-		player2 = Entrant.parse(testData.player2Data)
-		return true
-	})
+    before(async () => {
+        Initializer(process.env.API_TOKEN!)
+        player1 = Entrant.parse(testData.player1Data)
+        player2 = Entrant.parse(testData.player2Data)
+        return true
+    })
 
-	// id
-	it('should get the correct Player (smash.gg Entrant) Id 1', () => {
-		expect(player1.getId()).to.be.equal(testData.player1Data.id)
-	})
-	it('should get the correct Player (smash.gg Entrant) Id 2', () => {
-		expect(player2.getId()).to.be.equal(testData.player2Data.id)
-	})
+    // id
+    it('should get the correct Player (smash.gg Entrant) Id 1', () => {
+        expect(player1.getId()).to.be.equal(testData.player1Data.id)
+    })
+    it('should get the correct Player (smash.gg Entrant) Id 2', () => {
+        expect(player2.getId()).to.be.equal(testData.player2Data.id)
+    })
 
-	// name
-	it('should get the correct Player name 1', () => {
-		expect(player1.getName()).to.be.equal(testData.player1Data.name)
-	})
-	it('should get the correct Player name 2', () => {
-		expect(player2.getName()).to.be.equal(testData.player2Data.name)
-	})
-	
-	// eventId
-	it('should get the correct Event ID of the Player 1', () => {
-		expect(player1.getEventId()).to.be.equal(testData.player1Data.eventId)
-	})
-	it('should get the correct Event ID of the Player 2', () => {
-		expect(player2.getEventId()).to.be.equal(testData.player2Data.eventId)
-	})
+    // name
+    it('should get the correct Player name 1', () => {
+        expect(player1.getName()).to.be.equal(testData.player1Data.name)
+    })
+    it('should get the correct Player name 2', () => {
+        expect(player2.getName()).to.be.equal(testData.player2Data.name)
+    })
 
-	// skill
-	it('should get the correct Player skill 1', () => {
-		expect(player1.getSkill()).to.be.equal(testData.player1Data.skill)
-	})
-	it('should get the correct Player skill 2', () => {
-		expect(player1.getSkill()).to.be.equal(testData.player1Data.skill)
-	})
+    // eventId
+    it('should get the correct Event ID of the Player 1', () => {
+        expect(player1.getEventId()).to.be.equal(testData.player1Data.eventId)
+    })
+    it('should get the correct Event ID of the Player 2', () => {
+        expect(player2.getEventId()).to.be.equal(testData.player2Data.eventId)
+    })
 
-	// attendee data
-	it('should get the correct Player Attendee Data (smash.gg Participant) object 1', () => {
-		expect(player1.getAttendeeData()).to.have.deep.members([Attendee.parse(testData.player1Data.participants[0])])
-	})
-	it('should get the correct Player Attendee Data (smash.gg Participant) object 2', () => {
-		expect(player2.getAttendeeData()).to.have.deep.members([Attendee.parse(testData.player2Data.participants[0])])
-	})
+    // skill
+    it('should get the correct Player skill 1', () => {
+        expect(player1.getSkill()).to.be.equal(testData.player1Data.skill)
+    })
+    it('should get the correct Player skill 2', () => {
+        expect(player1.getSkill()).to.be.equal(testData.player1Data.skill)
+    })
 
-	// attendee
-	it('should get the correct Player Attendee (smash.gg Participant) object 1', () => {
-		expect(player1.getAttendee()).to.deep.equal(Attendee.parse(testData.player1Data.participants[0]))
-	})
-	it('should get the correct Player Attendee (smash.gg Participant) object 2', () => {
-		expect(player2.getAttendee()).to.deep.equal(Attendee.parse(testData.player2Data.participants[0]))
-	})
+    // attendee data
+    it('should get the correct Player Attendee Data (smash.gg Participant) object 1', () => {
+        expect(player1.getAttendeeData()).to.have.deep.members([Attendee.parse(testData.player1Data.participants[0])])
+    })
+    it('should get the correct Player Attendee Data (smash.gg Participant) object 2', () => {
+        expect(player2.getAttendeeData()).to.have.deep.members([Attendee.parse(testData.player2Data.participants[0])])
+    })
 
-	// attendee id
-	it('should get the correct Player Attendee (smash.gg Participant) id 1', () => {
-		expect(player1.getAttendeeId()).to.be.equal(testData.player1Data.participants[0].id)
-	})
-	it('should get the correct Player Attendee (smash.gg Participant) id 2', () => {
-		expect(player2.getAttendeeId()).to.be.equal(testData.player2Data.participants[0].id)
-	})
+    // attendee
+    it('should get the correct Player Attendee (smash.gg Participant) object 1', () => {
+        expect(player1.getAttendee()).to.deep.equal(Attendee.parse(testData.player1Data.participants[0]))
+    })
+    it('should get the correct Player Attendee (smash.gg Participant) object 2', () => {
+        expect(player2.getAttendee()).to.deep.equal(Attendee.parse(testData.player2Data.participants[0]))
+    })
 
-	// gamer tag
-	it('should get the correct Player Attendee (smash.gg Participant) gamer tag 1', () => {
-		expect(player1.getGamerTag()).to.be.equal(testData.player1Data.participants[0].gamerTag)
-	})
-	it('should get the correct Player Attendee (smash.gg Participant) gamer tag 2', () => {
-		expect(player2.getGamerTag()).to.be.equal(testData.player2Data.participants[0].gamerTag)
-	})
+    // attendee id
+    it('should get the correct Player Attendee (smash.gg Participant) id 1', () => {
+        expect(player1.getAttendeeId()).to.be.equal(testData.player1Data.participants[0].id)
+    })
+    it('should get the correct Player Attendee (smash.gg Participant) id 2', () => {
+        expect(player2.getAttendeeId()).to.be.equal(testData.player2Data.participants[0].id)
+    })
 
-	// sponsor
-	it('should get the correct Player Attendee (smash.gg Participant) sponsor 1', () => {
-		expect(player1.getSponsor()).to.be.equal(testData.player1Data.participants[0].prefix)
-	})
-	it('should get the correct Player Attendee (smash.gg Participant) sponsor 2', () => {
-		expect(player2.getSponsor()).to.be.equal(testData.player2Data.participants[0].prefix)
-	})
+    // gamer tag
+    it('should get the correct Player Attendee (smash.gg Participant) gamer tag 1', () => {
+        expect(player1.getGamerTag()).to.be.equal(testData.player1Data.participants[0].gamerTag)
+    })
+    it('should get the correct Player Attendee (smash.gg Participant) gamer tag 2', () => {
+        expect(player2.getGamerTag()).to.be.equal(testData.player2Data.participants[0].gamerTag)
+    })
 
-	// phone number
-	it('should get the correct Player Attendee (smash.gg Participant) phone number 1', () => {
-		expect(player1.getPhoneNumber()).to.be.equal(testData.player1Data.participants[0].phoneNumber)
-	})
-	it('should get the correct Player Attendee (smash.gg Participant) phone number 2', () => {
-		expect(player2.getPhoneNumber()).to.be.equal(testData.player2Data.participants[0].phoneNumber)
-	})
+    // sponsor
+    it('should get the correct Player Attendee (smash.gg Participant) sponsor 1', () => {
+        expect(player1.getSponsor()).to.be.equal(testData.player1Data.participants[0].prefix)
+    })
+    it('should get the correct Player Attendee (smash.gg Participant) sponsor 2', () => {
+        expect(player2.getSponsor()).to.be.equal(testData.player2Data.participants[0].prefix)
+    })
 
-	// contact info
-	it('should get the correct Player Attendee (smash.gg Participant) contact info 1', () => {
-		expect(player1.getContactInfo()).to.deep.equal(testData.player1Data.participants[0].contactInfo)
-	})
-	it('should get the correct Player Attendee (smash.gg Participant) contact info 2', () => {
-		expect(player1.getContactInfo()).to.deep.equal(testData.player1Data.participants[0].contactInfo)
-	})
+    // phone number
+    it('should get the correct Player Attendee (smash.gg Participant) phone number 1', () => {
+        expect(player1.getPhoneNumber()).to.be.equal(testData.player1Data.participants[0].phoneNumber)
+    })
+    it('should get the correct Player Attendee (smash.gg Participant) phone number 2', () => {
+        expect(player2.getPhoneNumber()).to.be.equal(testData.player2Data.participants[0].phoneNumber)
+    })
 
-	// city
-	it('should get the correct Player Attendee (smash.gg Participant) city 1', () => {
-		expect(player1.getCity()).to.be.equal(testData.player1Data.participants[0].contactInfo!.city)
-	})
-	it('should get the correct Player Attendee (smash.gg Participant) city 2', () => {
-		expect(player2.getCity()).to.be.equal(testData.player2Data.participants[0].contactInfo!.city)
-	})
+    // contact info
+    it('should get the correct Player Attendee (smash.gg Participant) contact info 1', () => {
+        expect(player1.getContactInfo()).to.deep.equal(testData.player1Data.participants[0].contactInfo)
+    })
+    it('should get the correct Player Attendee (smash.gg Participant) contact info 2', () => {
+        expect(player1.getContactInfo()).to.deep.equal(testData.player1Data.participants[0].contactInfo)
+    })
 
-	// state 
-	it('should get the correct Player Attendee (smash.gg Participant) state 1', () => {
-		expect(player1.getState()).to.be.equal(testData.player1Data.participants[0].contactInfo!.state)
-	})
-	it('should get the correct Player Attendee (smash.gg Participant) state 2', () => {
-		expect(player2.getState()).to.be.equal(testData.player2Data.participants[0].contactInfo!.state)
-	})
+    // city
+    it('should get the correct Player Attendee (smash.gg Participant) city 1', () => {
+        expect(player1.getCity()).to.be.equal(testData.player1Data.participants[0].contactInfo!.city)
+    })
+    it('should get the correct Player Attendee (smash.gg Participant) city 2', () => {
+        expect(player2.getCity()).to.be.equal(testData.player2Data.participants[0].contactInfo!.city)
+    })
 
-	// state id
-	it('should get the correct Player Attendee (smash.gg Participant) state id 1', () => {
-		expect(player1.getStateId()).to.be.equal(testData.player1Data.participants[0].contactInfo!.stateId)
-	})
-	it('should get the correct Player Attendee (smash.gg Participant) state id 2', () => {
-		expect(player2.getStateId()).to.be.equal(testData.player2Data.participants[0].contactInfo!.stateId)
-	})
+    // state
+    it('should get the correct Player Attendee (smash.gg Participant) state 1', () => {
+        expect(player1.getState()).to.be.equal(testData.player1Data.participants[0].contactInfo!.state)
+    })
+    it('should get the correct Player Attendee (smash.gg Participant) state 2', () => {
+        expect(player2.getState()).to.be.equal(testData.player2Data.participants[0].contactInfo!.state)
+    })
 
-	// country
-	it('should get the correct Player Attendee (smash.gg Participant) country 1', () => {
-		expect(player1.getCountry()).to.be.equal(testData.player1Data.participants[0].contactInfo!.country)
-	})
-	it('should get the correct Player Attendee (smash.gg Participant) country 2', () => {
-		expect(player2.getCountry()).to.be.equal(testData.player2Data.participants[0].contactInfo!.country)
-	})
+    // state id
+    it('should get the correct Player Attendee (smash.gg Participant) state id 1', () => {
+        expect(player1.getStateId()).to.be.equal(testData.player1Data.participants[0].contactInfo!.stateId)
+    })
+    it('should get the correct Player Attendee (smash.gg Participant) state id 2', () => {
+        expect(player2.getStateId()).to.be.equal(testData.player2Data.participants[0].contactInfo!.stateId)
+    })
 
-	// country id
-	it('should get the correct Player Attendee (smash.gg Participant) country id 1', () => {
-		expect(player1.getStateId()).to.be.equal(testData.player1Data.participants[0].contactInfo!.countryId)
-	})
-	it('should get the correct Player Attendee (smash.gg Participant) country id 2', () => {
-		expect(player2.getStateId()).to.be.equal(testData.player2Data.participants[0].contactInfo!.countryId)
-	})
+    // country
+    it('should get the correct Player Attendee (smash.gg Participant) country 1', () => {
+        expect(player1.getCountry()).to.be.equal(testData.player1Data.participants[0].contactInfo!.country)
+    })
+    it('should get the correct Player Attendee (smash.gg Participant) country 2', () => {
+        expect(player2.getCountry()).to.be.equal(testData.player2Data.participants[0].contactInfo!.country)
+    })
 
-	// contact name
-	it('should get the correct Player Attendee (smash.gg Participant) contact name 1', () => {
-		expect(player1.getContactName()).to.be.equal(testData.player1Data.participants[0].contactInfo!.name)
-	})
-	it('should get the correct Player Attendee (smash.gg Participant) contact name 2', () => {
-		expect(player2.getContactName()).to.be.equal(testData.player2Data.participants[0].contactInfo!.name)
-	})
+    // country id
+    it('should get the correct Player Attendee (smash.gg Participant) country id 1', () => {
+        expect(player1.getStateId()).to.be.equal(testData.player1Data.participants[0].contactInfo!.countryId)
+    })
+    it('should get the correct Player Attendee (smash.gg Participant) country id 2', () => {
+        expect(player2.getStateId()).to.be.equal(testData.player2Data.participants[0].contactInfo!.countryId)
+    })
 
-	// first name
-	it('should get the correct Player Attendee (smash.gg Participant) first name 1', () => {
-		expect(player1.getFirstName()).to.be.equal(testData.player1Data.participants[0].contactInfo!.nameFirst)
-	})
-	it('should get the correct Player Attendee (smash.gg Participant) first name 2', () => {
-		expect(player2.getFirstName()).to.be.equal(testData.player2Data.participants[0].contactInfo!.nameFirst)
-	})
+    // contact name
+    it('should get the correct Player Attendee (smash.gg Participant) contact name 1', () => {
+        expect(player1.getContactName()).to.be.equal(testData.player1Data.participants[0].contactInfo!.name)
+    })
+    it('should get the correct Player Attendee (smash.gg Participant) contact name 2', () => {
+        expect(player2.getContactName()).to.be.equal(testData.player2Data.participants[0].contactInfo!.name)
+    })
 
-	// last name
-	it('should get the correct Player Attendee (smash.gg Participant) last name 1', () => {
-		expect(player1.getLastName()).to.be.equal(testData.player1Data.participants[0].contactInfo!.nameLast)
-	})
-	it('should get the correct Player Attendee (smash.gg Participant) last name 2', () => {
-		expect(player2.getLastName()).to.be.equal(testData.player2Data.participants[0].contactInfo!.nameLast)
-	})
+    // first name
+    it('should get the correct Player Attendee (smash.gg Participant) first name 1', () => {
+        expect(player1.getFirstName()).to.be.equal(testData.player1Data.participants[0].contactInfo!.nameFirst)
+    })
+    it('should get the correct Player Attendee (smash.gg Participant) first name 2', () => {
+        expect(player2.getFirstName()).to.be.equal(testData.player2Data.participants[0].contactInfo!.nameFirst)
+    })
 
-	// zipcode
-	it('should get the correct Player Attendee (smash.gg Participant) zipcode 1', () => {
-		expect(player1.getZipcode()).to.be.equal(testData.player1Data.participants[0].contactInfo!.zipcode)
-	})
-	it('should get the correct Player Attendee (smash.gg Participant) zipcode 2', () => {
-		expect(player2.getZipcode()).to.be.equal(testData.player2Data.participants[0].contactInfo!.zipcode)
-	})
+    // last name
+    it('should get the correct Player Attendee (smash.gg Participant) last name 1', () => {
+        expect(player1.getLastName()).to.be.equal(testData.player1Data.participants[0].contactInfo!.nameLast)
+    })
+    it('should get the correct Player Attendee (smash.gg Participant) last name 2', () => {
+        expect(player2.getLastName()).to.be.equal(testData.player2Data.participants[0].contactInfo!.nameLast)
+    })
 
-	// connected accounts
-	it('should get the correct Player Attendee (smash.gg Participant) id', () => {
-		expect(player1.getConnectedAccounts()).to.be.equal(testData.player1Data.participants[0].connectedAccounts)
-	})
+    // zipcode
+    it('should get the correct Player Attendee (smash.gg Participant) zipcode 1', () => {
+        expect(player1.getZipcode()).to.be.equal(testData.player1Data.participants[0].contactInfo!.zipcode)
+    })
+    it('should get the correct Player Attendee (smash.gg Participant) zipcode 2', () => {
+        expect(player2.getZipcode()).to.be.equal(testData.player2Data.participants[0].contactInfo!.zipcode)
+    })
+
+    // connected accounts
+    it('should get the correct Player Attendee (smash.gg Participant) id', () => {
+        expect(player1.getConnectedAccounts()).to.be.equal(testData.player1Data.participants[0].connectedAccounts)
+    })
 
 })
 

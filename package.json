@@ -25,7 +25,8 @@
     "lint": "./node_modules/.bin/eslint .",
     "tsc": "tsc",
     "tsc-v1": "tsc --project tsconfig.v1.json",
-    "tslint": "./node_modules/.bin/tslint -c ./tslint.json --project '.'",
+    "tslint": "tslint -c tslint.json 'src/v4/**/*.ts'",
+    "tslint-fix": "tslint --fix -c tslint.json 'src/v4/**/*.ts'",
     "sandbox": "node ./sandbox/sandbox",
     "sample1": "node ./resources/samples/v4/sample1",
     "sample2": "node ./resources/samples/v4/sample2"

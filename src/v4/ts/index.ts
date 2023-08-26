@@ -15,9 +15,9 @@ export {VideoGame} from './lib/models/VideoGame'
 export {Character} from './lib/models/Character'
 
 export {
-	default as Log, 
-	setLogLevel, 
-	addLog,
-	disableLog, 
-	enableLog
+    default as Log,
+    setLogLevel,
+    addLog,
+    disableLog,
+    enableLog
 } from './lib/util/Logger'
