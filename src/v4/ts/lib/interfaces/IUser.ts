@@ -1,12 +1,11 @@
-import {IPlayerRank} from './IPlayerRank'
 import {IGGSet, IGGSetData} from './IGGSet'
+import {IPlayerRank} from './IPlayerRank'
 
 export interface IUser{
-	/*
+    /*
 	id: number,
 	bio: string
 	discriminator: string,
-	email: string,
 	genderPronoun: string,
 	name: string,
 	playerId: string,
@@ -23,10 +22,9 @@ export interface IUser{
 	gamerTagChangedAt: number | null
 	*/
 
-	getId(): number | null,
+    getId(): number | null,
     getBio(): string | null,
     getDiscriminator(): string | null,
-    getEmail(): string | null,
     getGenderPronoun(): string | null,
     getName(): string | null,
     getPlayerId(): number | null,
@@ -45,38 +43,37 @@ export interface IUser{
 // 	getCountry(): string | null
 // 	getGamerTagChangedAt(): Date | null
 
-	getRecentSets(): Promise<IGGSet[]>
-	getRecentStandings(): Promise<IPlayerRank[]>
+    getRecentSets(): Promise<IGGSet[]>
+    getRecentStandings(): Promise<IPlayerRank[]>
 }
 
 export interface IUserDataFull{
-	user: IUserData
+    user: IUserData
 }
 
 export interface IUserData{
-	id: number | null,
-	bio: string | null,
-	discriminator: string | null,
-	email: string | null,
-	genderPronoun: string | null,
-	name: string | null,
-	player: {
-	    id: number | null,
-	    gamerTag: string | null,
-	    prefix: string | null
-	}
+    id: number | null,
+    bio: string | null,
+    discriminator: string | null,
+    genderPronoun: string | null,
+    name: string | null,
+    player: {
+        id: number | null,
+        gamerTag: string | null,
+        prefix: string | null
+    }
 }
 
 export interface IUserDataRankings{
-	player: {
-		id: number,
-		recentStandings: IPlayerRank[]
-	}
+    player: {
+        id: number,
+        recentStandings: IPlayerRank[]
+    }
 }
 
 export interface IUserDataSets{
-	player: {
-		id: number,
-		recentSets: IGGSetData[]
-	}
+    player: {
+        id: number,
+        recentSets: IGGSetData[]
+    }
 }

@@ -1,5 +1,5 @@
 export interface ICommonOptions{
-	isCached?: boolean,
-	concurrency?: number,
-	rawEncoding?: string
+    isCached?: boolean,
+    concurrency?: number,
+    rawEncoding?: string
 }

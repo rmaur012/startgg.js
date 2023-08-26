@@ -1,15 +1,15 @@
 
-import {IStandingStats, IStandingScore} from '../interfaces/IStanding'
+import {IStandingScore, IStandingStats} from '../interfaces/IStanding'
 
 export class StandingStats implements IStandingStats{
 
-	private score: IStandingScore
+    private score: IStandingScore
 
-	constructor(score: IStandingScore){
-		this.score = score
-	}
+    constructor(score: IStandingScore){
+        this.score = score
+    }
 
-	public getScore(): IStandingScore{
-		return this.score
-	}
+    public getScore(): IStandingScore{
+        return this.score
+    }
 }

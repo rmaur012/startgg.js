@@ -1,7 +1,7 @@
 import * as Schema from './schema'
 
 export const event = `query EventQuery($id: ID!){
-    event(id:$id){   
+    event(id:$id){
         ${Schema.event}
     }
 }
@@ -17,7 +17,7 @@ export const eventPhases = `query EventPhases($id: ID!){
     event(id: $id){
         phases{
             ${Schema.phase}
-        }   
+        }
     }
 }`
 
@@ -26,11 +26,11 @@ export const eventPhaseGroups = `query EventPhaseGroups($id: ID!){
         phaseGroups{
             ${Schema.phaseGroup}
         }
-    }   
+    }
 }
 `
 
-export const eventSets = 
+export const eventSets =
 `query EventSets(
     $id: ID!, $page: Int, $perPage: Int, $hasPermissions: Boolean, $sortType: SetSortType, $filters: SetFilters){
     event(id: $id){
@@ -48,10 +48,10 @@ export const eventSets =
                 }
             }
         }
-    }   
+    }
 }`
 
-export const eventEntrants = 
+export const eventEntrants =
 `query EventSets($id: ID!, $page: Int, $perPage: Int, $sortBy: String, $filter: EventEntrantPageQueryFilter){
     event(id: $id){
         entrants(query: {
@@ -68,7 +68,7 @@ export const eventEntrants =
     }
 }`
 
-export const eventAttendees = 
+export const eventAttendees =
 `query EventAttendees(
     $id: ID!, $page: Int, $perPage: Int, $sortBy: String, $isAdmin: Boolean, $filter: ParticipantPageFilter){
     event(id: $id){
@@ -88,7 +88,7 @@ export const eventAttendees =
     }
 }`
 
-export const eventAttendees2 = 
+export const eventAttendees2 =
 `query EventAttendees($id: ID!, $page: Int, $perPage: Int, $sortBy: String, $filter: EventEntrantPageQueryFilter){
     event(id: $id){
         entrants(query: {

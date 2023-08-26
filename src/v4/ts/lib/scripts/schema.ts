@@ -12,7 +12,6 @@ numAttendees
 owner{
     id
     discriminator
-    email
     name
 }
 postalCode
@@ -80,7 +79,6 @@ export const user = `
 id
 bio
 discriminator
-email
 genderPronoun
 name
 player{
@@ -130,7 +128,7 @@ event{
 }
 name
 participants{
-	${attendee}	
+	${attendee}
 }
 skill
 `
@@ -158,7 +156,7 @@ slots(includeByes:false){
 export const set = `
 id
 completedAt
-displayScore  
+displayScore
 event{
     id
 }
@@ -254,7 +252,6 @@ countryCode`
 export const organizer = `
 id
 bio
-email
 genderPronoun
 player {
     gamerTag

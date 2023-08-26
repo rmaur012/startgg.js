@@ -28,7 +28,7 @@ export const userRecentGGSets = `query UserRecentSets($id: ID!) {
 	player(id:$id){
 		id
 		recentSets{
-      		${Schema.set}     
+      		${Schema.set}
 		}
 	}
 }`

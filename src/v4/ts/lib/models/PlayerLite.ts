@@ -1,28 +1,28 @@
-import {IPlayerLite} from '../interfaces/IPlayerLite'
 import {IGGSetSlots} from '../interfaces/IGGSet'
+import {IPlayerLite} from '../interfaces/IPlayerLite'
 
 export class PlayerLite implements IPlayerLite{
-	
-	public static parse(tag: string | null, slot: IGGSetSlots){
 
-		const entrantId = slot.entrant ? slot.entrant.id : null
-		const attendeeIds = slot.entrant ? slot.entrant.participants.map(p => p.id) : []
+    public static parse(tag: string | null, slot: IGGSetSlots){
 
-		return new PlayerLite(
-			tag,
-			entrantId,
-			attendeeIds
-		)
-	}
+        const entrantId = slot.entrant ? slot.entrant.id : null
+        const attendeeIds = slot.entrant ? slot.entrant.participants.map(p => p.id) : []
 
-	public tag: string | null
-	public entrantId: number | null
-	public attendeeIds: number[]
-	
-	constructor(tag: string | null, entrantId: number | null, attendeeIds: number[] | []){
-		this.tag = tag
-		this.entrantId = entrantId
-		this.attendeeIds = attendeeIds
-	}
-	
+        return new PlayerLite(
+            tag,
+            entrantId,
+            attendeeIds
+        )
+    }
+
+    public tag: string | null
+    public entrantId: number | null
+    public attendeeIds: number[]
+
+    constructor(tag: string | null, entrantId: number | null, attendeeIds: number[] | []){
+        this.tag = tag
+        this.entrantId = entrantId
+        this.attendeeIds = attendeeIds
+    }
+
 }
