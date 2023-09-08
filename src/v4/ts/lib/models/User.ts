@@ -104,12 +104,12 @@ export class User implements IUser{
     public async getRecentSets(): Promise<IGGSet[]> {
         Log.info('Getting Sets for %s (User: %s)', this.playerGamertag, this.id)
         const data: IUserDataSets = await NI.query(queries.userRecentGGSets, {id: this.id})
-        const sets: IGGSet[] = data.player.recentSets.map(setData => GGSet.parse(setData))
+        const sets: IGGSet[] = data.player.sets.nodes.map(setData => GGSet.parse(setData))
         return sets
     }
 
     public async getRecentStandings(): Promise<IPlayerRank[]> {
-        Log.info('Getting Rankings for %s (User: %s)', this.playerGamertag, this.playerId)
+        Log.info('Getting Standings for %s (User: %s)', this.playerGamertag, this.playerId)
         const data: IUserDataRankings = await NI.query(queries.userRecentStandings, {id: this.playerId})
         const rankings: IPlayerRank[] = data.player.recentStandings
         return rankings

@@ -9,6 +9,8 @@ import {expect} from 'chai'
 import {User} from '../lib/models/User'
 import Initializer from '../lib/util/Initializer'
 import * as testData from './data/user.testData'
+import sinon from 'sinon'
+import NI from '../lib/util/NetworkInterface'
 
 let user1: User, user2: User
 const USER_ID_1 = 95277 // Davemon
@@ -126,7 +128,7 @@ describe('startgg User (has some pending)', () => {
         expect(user2.getSponsor()).to.be.equal('')
     })
 
-    // rankings (Deprecated)
+    //rankings (Deprecated)
     it('should get the most recent standings back 1', async function() {
         this.timeout(5000)
         expect(await user1.getRecentStandings()).to.have.deep.members(DAVID_MONSTER_PLACEMENTS)
@@ -138,15 +140,29 @@ describe('startgg User (has some pending)', () => {
         return true
     })
 
-    // TODO implement
-    // recent sets
-// 	xit('should get the correct recent sets back 1', async function() {
-// 		this.timeout(5000)
-//
-// 	})
-// 	xit('should get the correct recent sets back 2', async function() {
-// 		this.timeout(5000)
-//
-// 	})
+    describe('mocked sophisticated functions unit tests', function() {
+        // getRecentSets()
+        it('getRecentSets(), should return 14 recent sets for Gluttony', async () => {
+            const myUser = new User(USER_ID_1, 'Great Bio', 'DIS', 'He/Him', null, null, null, null);
+            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedGluttonyRecentSetsResponse);
+
+            const res = await myUser.getRecentSets();
+            sinon.assert.calledOnce(niStub);
+            expect(res.length).to.be.equal(14)
+            niStub.restore();
+        })
+
+        // getRecentStandings()
+        it('getRecentStandings(), should return the correct standings for stubbed value for user', async () => {
+            const myUser = new User(USER_ID_1, 'Great Bio', 'DIS', 'He/Him', null, null, null, null);
+            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedUserRecentStandingsResponse);
+
+            const res = myUser.getRecentStandings();
+            sinon.assert.calledOnce(niStub);
+            expect(JSON.stringify(await res)).to.be.equal(JSON.stringify(testData.mockedUserRecentStandingsRankingsResult))
+            niStub.restore();
+        })
+
+    })
 
 })

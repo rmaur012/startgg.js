@@ -74,6 +74,8 @@ export interface IUserDataRankings{
 export interface IUserDataSets{
     player: {
         id: number,
-        recentSets: IGGSetData[]
+        sets: {
+            nodes: IGGSetData[]
+        }
     }
 }
