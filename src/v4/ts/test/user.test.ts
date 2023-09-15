@@ -162,7 +162,5 @@ describe('startgg User (has some pending)', () => {
             expect(JSON.stringify(await res)).to.be.equal(JSON.stringify(testData.mockedUserRecentStandingsRankingsResult))
             niStub.restore();
         })
-
     })
-
 })

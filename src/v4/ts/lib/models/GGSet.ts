@@ -171,8 +171,8 @@ export class GGSet extends EventEmitter implements IGGSet{
         completedAt: number | null,
         displayScore: string | null,
         event: {
-                id: number | null
-            },
+            id: number | null
+        },
         fullRoundText: string | null,
         identifier: string | null,
         phaseGroup:{
@@ -339,8 +339,7 @@ export class GGSet extends EventEmitter implements IGGSet{
                 return this.player2
             default:
                 throw new Error(
-                    `Winner ID ${this.winnerId} does not match either player ID:
-					[${[this.player1.entrantId, this.player2.entrantId].join(',')}]`
+                    `Winner ID ${this.winnerId} does not match either player ID: [${[this.player1.entrantId, this.player2.entrantId].join(',')}]`
                 )
             }
         else throw new Error(`Set (${this.id}) must be complete to get the Winning Player`)
@@ -423,6 +422,7 @@ export class GGSet extends EventEmitter implements IGGSet{
         return Game.parseFull(data)
     }
 
+    //TODO: Implement function + tests and fix the attendees query to match site schema
     public async getAttendees(): Promise<IAttendee[]> {
         log.info('Getting Attendees who participated in Set [%s]', this.id)
         const data: IGGSetSlotAttendeeData = await NI.query(queries.attendees, {id: this.id})
@@ -433,6 +433,7 @@ export class GGSet extends EventEmitter implements IGGSet{
         return attendees
     }
 
+    //TODO: Implement function + tests and fix the entrants query to match site schema
     public async getEntrants(): Promise<IEntrant[]> {
         log.info('Getting Entrants who participated in Set [%s]', this.id)
         const data: IGGSetSlotEntrantData = await NI.query(queries.entrants, {id: this.id})

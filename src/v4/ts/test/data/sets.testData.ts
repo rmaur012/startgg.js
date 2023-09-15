@@ -1,9 +1,11 @@
 import {
     IGGSetData,
     IGGSetDataFull,
-    IGGSetDataWithGames
+    IGGSetDataWithGames,
+    IGGSetSlotAttendeeData
 } from '../../lib/interfaces/IGGSet'
 import {IPlayerLite} from '../../lib/interfaces/IPlayerLite'
+import {GGSet} from '../../lib/models/GGSet'
 
 import {PlayerLite} from '../../lib/models/PlayerLite'
 
@@ -53,6 +55,25 @@ export const set1: IGGSetData = {
       totalGames: 5,
       winnerId: 10895582
     }
+
+export const set1GGSet = new GGSet(
+    set1.id,
+    set1.completedAt,
+    set1.displayScore,
+    set1.event,
+    set1.fullRoundText,
+    set1.identifier,
+    set1.phaseGroup,
+    set1.round,
+    set1.startedAt,
+    set1.slots,
+    set1.state,
+    set1.totalGames,
+    set1.winnerId,
+    PlayerLite.parse(GGSet.parseDisplayScore(set1.displayScore!).tag1, set1.slots[0]),
+    PlayerLite.parse(GGSet.parseDisplayScore(set1.displayScore!).tag2, set1.slots[1]),
+    GGSet.parseDisplayScore(set1.displayScore!).score1,
+    GGSet.parseDisplayScore(set1.displayScore!).score2); // finish this
 
 export const set2: IGGSetData = {
       id: 51002303,
