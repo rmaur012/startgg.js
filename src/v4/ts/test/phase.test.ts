@@ -5,13 +5,17 @@ config({path: ROOT})
 
 import '../lib/util/ErrorHandler'
 import * as log from '../lib/util/Logger'
+import _ from 'lodash'
+import moment from 'moment'
 
 import chai from 'chai'
 import cap from 'chai-as-promised'
+import sinon from 'sinon'
 chai.use(cap)
 const {expect} = chai
 
 import {IPhase} from '../lib/interfaces/IPhase'
+import {IPhaseGroup} from '../lib/interfaces/IPhaseGroup'
 
 import {Attendee} from '../lib/models/Attendee'
 import {Entrant} from '../lib/models/Entrant'
@@ -20,6 +24,7 @@ import {Phase} from '../lib/models/Phase'
 import {PhaseGroup} from '../lib/models/PhaseGroup'
 import Initializer from '../lib/util/Initializer'
 import * as testData from './data/phase.testData'
+import NI from '../lib/util/NetworkInterface'
 
 const LOG_LEVEL = log.levels.DEBUG
 
@@ -33,21 +38,21 @@ const PHASE_1_ATTENDEE_COUNT = 31
 const ID2 = 1242261
 const EVENT_ID_2 = 432884
 const PHASE_2_PG_COUNT = 2
-const PHASE_2_SET_COUNT = 1164
+const PHASE_2_SET_COUNT = 180
 const PHASE_2_ENTRANT_COUNT = 128
 const PHASE_2_ATTENDEE_COUNT = 128
 
 const ID3 = 1242262
 const EVENT_ID_3 = 432884
 const PHASE_3_PG_COUNT = 1
-const PHASE_3_SET_COUNT = 1164
+const PHASE_3_SET_COUNT = 11
 const PHASE_3_ENTRANT_COUNT = 8
 const PHASE_3_ATTENDEE_COUNT = 8
 
 let phase1: IPhase
 let phase2: IPhase
 let phase3: IPhase
-// let concurrency = 4
+let concurrency = 4
 
 describe('startgg Phase', function() {
     this.timeout(10000)
@@ -122,17 +127,17 @@ describe('startgg Phase', function() {
         return true
     })
 
-// 	xit('should correctly get all sets 2', async function() {
-// 		this.timeout(120000)
-// 		await testSets(phase2, PHASE_2_SET_COUNT)
-// 		return true
-// 	})
-//
-// 	xit('should correctly get all sets 3', async function() {
-// 		this.timeout(60000)
-// 		await testSets(phase3, PHASE_3_SET_COUNT)
-// 		return true
-// 	})
+	it('should correctly get all sets 2', async function() {
+		this.timeout(120000)
+		await testSets(phase2, PHASE_2_SET_COUNT)
+		return true
+	})
+
+	it('should correctly get all sets 3', async function() {
+		this.timeout(60000)
+		await testSets(phase3, PHASE_3_SET_COUNT)
+		return true
+	})
 
     // entrants
     it('should correctly get all entrants 1', async function() {
@@ -185,15 +190,15 @@ describe('startgg Phase', function() {
         return true
     })
 
-    /*
+
 	it('should correctly get all phase groups', async () => {
 		this.timeout(45000)
 
-		let phaseGroups1 = await phase1.getPhaseGroups({concurrency: concurrency})
+		let phaseGroups1 = await phase1.getPhaseGroups()
 
-		expect(phaseGroups1.length).to.be.equal(16)
+		expect(phaseGroups1.length).to.be.equal(1)
 
-		var hasDuplicates = function(a: Array<PhaseGroup>) {
+		var hasDuplicates = function(a: Array<IPhaseGroup>) {
 			return _.uniq(a).length !== a.length
 		}
 		expect(hasDuplicates(phaseGroups1)).to.be.false
@@ -208,11 +213,11 @@ describe('startgg Phase', function() {
 	it('should correctly get all phase groups 2', async () => {
 		this.timeout(45000)
 
-		let phaseGroups2 = await phase2.getPhaseGroups({concurrency: concurrency})
+		let phaseGroups2 = await phase2.getPhaseGroups()
 
-		expect(phaseGroups2.length).to.be.equal(32)
+		expect(phaseGroups2.length).to.be.equal(2)
 
-		var hasDuplicates = function(a: Array<PhaseGroup>) {
+		var hasDuplicates = function(a: Array<IPhaseGroup>) {
 			return _.uniq(a).length !== a.length
 		}
 		expect(hasDuplicates(phaseGroups2)).to.be.false
@@ -227,11 +232,11 @@ describe('startgg Phase', function() {
 	it('should correctly get all phase groups 3', async () => {
 		this.timeout(45000)
 
-		let phaseGroups3 = await phase3.getPhaseGroups({concurrency: concurrency})
+		let phaseGroups3 = await phase3.getPhaseGroups()
 
-		expect(phaseGroups3.length).to.be.equal(16)
+		expect(phaseGroups3.length).to.be.equal(1)
 
-		var hasDuplicates = function(a: Array<PhaseGroup>) {
+		var hasDuplicates = function(a: Array<IPhaseGroup>) {
 			return _.uniq(a).length !== a.length
 		}
 		expect(hasDuplicates(phaseGroups3)).to.be.false
@@ -246,9 +251,9 @@ describe('startgg Phase', function() {
 	it('should correctly get all sets for a phase', async () => {
 		this.timeout(30000)
 
-		let sets1 = await phase1.getSets({concurrency: concurrency})
+		let sets1 = await phase1.getSets()
 
-		expect(sets1.length).to.be.equal(248)
+		expect(sets1.length).to.be.equal(61)
 
 		sets1.forEach(set => {
 			expect(set).to.be.instanceof(GGSet)
@@ -257,87 +262,132 @@ describe('startgg Phase', function() {
 		return true
 	})
 
-	xit('should correctly get all sets for a phase 2', async () => {
-		this.timeout(45000)
-
-		let sets2 = await phase2.getSets({concurrency: concurrency})
-
-		expect(sets2.length).to.be.equal(1292)
-
-		sets2.forEach(set => {
-			expect(set).to.be.instanceof(GGSet)
-		})
-
-		return true
-	})
+// Easy to reach rate limit here
+// 	xit('should correctly get all sets for a phase 2', async () => {
+// 		let sets2 = await phase2.getSets()
+//
+// 		expect(sets2.length).to.be.equal(180)
+//
+// 		sets2.forEach(set => {
+// 			expect(set).to.be.instanceof(GGSet)
+// 		})
+//
+// 		return true
+// 	}).timeout(45000)
 
 	it('should correctly get all sets for a phase 3', async () => {
-		this.timeout(45000)
+		let sets3 = await phase3.getSets()
 
-		let sets3 = await phase3.getSets({concurrency: concurrency})
-
-		expect(sets3.length).to.be.equal(450)
+		expect(sets3.length).to.be.equal(11)
 
 		sets3.forEach(set => {
 			expect(set).to.be.instanceof(GGSet)
 		})
 
 		return true
-	})
+	}).timeout(45000)
 
-	it('should correctly get all players for a phase', async () => {
-		this.timeout(30000)
+//     // getPlayers() isnt a real function?
+// 	it('should correctly get all players for a phase', async () => {
+// 		this.timeout(30000)
+//
+// 		let players1 = await phase1.getPlayers({concurrency: concurrency})
+//
+// 		expect(players1.length).to.be.equal(156)
+//
+// 		players1.forEach(set => {
+// 			expect(set).to.be.instanceof(Entrant)
+// 		})
+//
+// 		return true
+// 	})
 
-		let players1 = await phase1.getPlayers({concurrency: concurrency})
+// //     getPlayers() isnt a thing?
+// 	xit('should correctly get all players for a phase', async () => {
+// 		this.timeout(30000)
+//
+// 		let players2 = await phase2.getPlayers({concurrency: concurrency})
+//
+// 		expect(players2.length).to.be.equal(678)
+//
+// 		players2.forEach(set => {
+// 			expect(set).to.be.instanceof(Entrant)
+// 		})
+//
+// 		return true
+// 	})
 
-		expect(players1.length).to.be.equal(156)
+// //     getEventById() isnt a thing?
+// 	xit('should correctly get sets x minutes back', async () => {
+// 		this.timeout(30000)
+//
+// 		let minutesBack = 5
+// 		// getEventById() doesnt exist for Event class?
+// 		let event = await Event.getEventById(phase1.getEventId(), {})
+// 		let eventDate = moment(event.getStartTime() as Date).add(30, 'minutes').toDate()
+//
+// 		let clock = sinon.useFakeTimers(eventDate)
+// 		let sets = await phase1.getSetsXMinutesBack(minutesBack)
+// 		expect(sets.length).to.be.equal(5)
+// 		sets.forEach(set=> {
+// 			expect(set).to.be.instanceof(GGSet)
+//
+// 			let now = moment()
+// 			let then = moment(set.getCompletedAt() as Date)
+// 			let diff = moment.duration(now.diff(then)).minutes()
+// 			expect(diff <= minutesBack && diff >= 0 && set.getIsComplete()).to.be.true
+// 		})
+// 		clock.restore()
+// 		return true
+// 	})
 
-		players1.forEach(set => {
-			expect(set).to.be.instanceof(Entrant)
-		})
+	describe('mocked sophisticated functions unit tests', function() {
+	    // getPhaseGroups()
+	    // getSeeds()
+        // getEntrants()
+        it('getEntrants(), should return the correct entrants for stubbed value for single bracket', async () => {
+            const myPhase = new Phase(ID3, EVENT_ID_3, 'Top 8', 8, 1);
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedTop8PhasePaginatedDataQueryResponse);
+            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedTop8GetEntrantsClusterQueryResponse);
 
-		return true
-	})
+            const res = myPhase.getEntrants();
+            sinon.assert.calledOnce(niStub1);
+            expect(await res).to.deep.equal(testData.expectedTop8PhaseGetEntrantsReturnValue)
+            niStub1.restore();
+            niStub2.restore();
+        })
 
-	it('should correctly get all players for a phase', async () => {
-		this.timeout(30000)
+        // getAttendees()
+        it('getAttendees(), should return the correct attendees for stubbed value for single bracket', async () => {
+            const myPhase = new Phase(ID3, EVENT_ID_3, 'Top 8', 8, 1);
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedTop8PhasePaginatedDataQueryResponse);
+            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedTop8GetAttendeesClusterQueryResponse);
 
-		let players2 = await phase2.getPlayers({concurrency: concurrency})
+            const res = myPhase.getAttendees();
+            sinon.assert.calledOnce(niStub1);
+            expect(await res).to.deep.equal(testData.expectedTop8PhaseGetAttendeesReturnValue)
+            niStub1.restore();
+            niStub2.restore();
+        })
 
-		expect(players2.length).to.be.equal(678)
+        // getSets
+        it('getSets(), should return the correct sets for stubbed value for single bracket', async () => {
+            const myPhase = new Phase(ID3, EVENT_ID_3, 'Top 8', 8, 1);
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedTop8PhasePaginatedDataQueryResponse);
+            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedTop8GetSetsClusterQueryResponse);
 
-		players2.forEach(set => {
-			expect(set).to.be.instanceof(Entrant)
-		})
+            const res = myPhase.getSets();
+            sinon.assert.calledOnce(niStub1);
+            expect(await res).to.deep.equal(testData.expectedTop8PhaseGetSetsReturnValue)
+            niStub1.restore();
+            niStub2.restore();
+        })
 
-		return true
-	})
 
-	it('should correctly get sets x minutes back', async () => {
-		this.timeout(30000)
 
-		let minutesBack = 5
-		let event = await Event.getEventById(phase1.getEventId(), {})
-		let eventDate = moment(event.getStartTime() as Date).add(30, 'minutes').toDate()
-
-		let clock = sinon.useFakeTimers(eventDate)
-		let sets = await phase1.getSetsXMinutesBack(minutesBack)
-		expect(sets.length).to.be.equal(5)
-		sets.forEach(set=> {
-			expect(set).to.be.instanceof(GGSet)
-
-			let now = moment()
-			let then = moment(set.getCompletedAt() as Date)
-			let diff = moment.duration(now.diff(then)).minutes()
-			expect(diff <= minutesBack && diff >= 0 && set.getIsComplete()).to.be.true
-		})
-		clock.restore()
-		return true
-	})
-	*/
+    })
 })
 
-//
 async function testSets(phase: IPhase, expected: number){
     const arr = await phase.getSets()
 

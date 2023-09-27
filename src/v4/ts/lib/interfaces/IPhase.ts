@@ -24,7 +24,7 @@ export interface IPhase{
     getAttendees(options?: IAttendeeOptions): Promise<IAttendee[]>
     getIncompleteSets(options?: IGGSetOptions): Promise<IGGSet[]>
     getCompleteSets(options?: IGGSetOptions): Promise<IGGSet[]>
-    getSetsXMinutesBack(minutesBack: number, options: IGGSetOptions): Promise<IGGSet[]>
+    getSetsXMinutesBack(minutesBack: number, options?: IGGSetOptions): Promise<IGGSet[]>
 
 }
 
