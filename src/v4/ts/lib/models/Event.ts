@@ -223,7 +223,6 @@ export class Event extends EventEmitter implements IEvent{
         }
 
         const pgs: IPhaseGroup[] = await this.getPhaseGroups()
-
         let attendees: IAttendee[] = await NI.clusterQuery(pgs, 'getAttendees', options)
         if(options.isVerified) attendees = attendees.filter(attendee => attendee.getVerified())
         return _.uniqBy(_.flatten(attendees), 'id')

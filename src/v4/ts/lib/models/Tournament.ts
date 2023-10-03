@@ -149,8 +149,7 @@ export class Tournament implements ITournament{
     public async getEvents(): Promise<IEvent[]> {
         log.info('Getting Events for Tournament [%s :: %s]', this.id, this.name)
         const data: ITournamentEventData = await NI.query(queries.tournamentEvents, {id: this.id})
-        const events = data.tournament.events.map(event => Event.parse(event))
-        return events
+        return data.tournament.events.map(event => Event.parse(event))
     }
 
     public async getPhases(): Promise<IPhase[]> {

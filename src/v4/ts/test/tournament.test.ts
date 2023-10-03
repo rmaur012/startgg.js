@@ -3,23 +3,37 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
+import _ from 'lodash'
 import '../lib/util/ErrorHandler'
-// import * as log from '../lib/util/Logger'
+import * as log from '../lib/util/Logger'
 
 import chai from 'chai'
 import cap from 'chai-as-promised'
 import moment from 'moment'
+import sinon from 'sinon'
 chai.use(cap)
 const {expect} = chai
 
 import {IAttendee} from '../lib/interfaces/IAttendee'
+import {IEntrant} from '../lib/interfaces/IEntrant'
+import {IEvent} from '../lib/interfaces/IEvent'
+import {IGGSet} from '../lib/interfaces/IGGSet'
+import {IPhase} from '../lib/interfaces/IPhase'
+import {IPhaseGroup} from '../lib/interfaces/IPhaseGroup'
 import {ITournament} from '../lib/interfaces/ITournament'
 
+import {Attendee} from '../lib/models/Attendee'
+import {Entrant} from '../lib/models/Entrant'
+import {Event} from '../lib/models/Event'
+import {GGSet} from '../lib/models/GGSet'
+import {Phase} from '../lib/models/Phase'
+import {PhaseGroup} from '../lib/models/PhaseGroup'
 import {Tournament} from '../lib/models/Tournament'
 import Initializer from '../lib/util/Initializer'
+import NI from '../lib/util/NetworkInterface'
 import * as testData from './data/tournament.testData'
 
-let tournament1: ITournament, tournament2: ITournament
+let tournament1: ITournament, tournament2: ITournament, tournament4: ITournament
 
 const TOURNAMENT_ID_1 = 432884
 const TOURNAMENT_SLUG_1 = 'tournament/port-priority-7'
@@ -29,6 +43,9 @@ const TOURNAMENT_SLUG_2 = 'tournament/genesis-9-1'
 
 const TOURNAMENT_ID_3 = 449011
 const TOURNAMENT_SLUG_3 = 'tournament/let-s-make-big-moves-2023'
+
+const TOURNAMENT_ID_4 = 594032
+const TOURNAMENT_SLUG_4 = 'tournament/unfunstuff-smash-ultimate-unfunday-mondays-week-40'
 
 describe('startgg Tournament', function() {
     this.timeout(10000)
@@ -40,15 +57,19 @@ describe('startgg Tournament', function() {
         console.log('Getting tourneys by id...')
         const ti1 = await Tournament.getById(TOURNAMENT_ID_1)
         const ti2 = await Tournament.getById(TOURNAMENT_ID_2)
+        const ti4 = await Tournament.getById(TOURNAMENT_ID_4)
         console.log('Getting tourneys by slug...')
         const ts1 = await Tournament.get(TOURNAMENT_SLUG_1)
         const ts2 = await Tournament.get(TOURNAMENT_SLUG_2)
+        const ts4 = await Tournament.get(TOURNAMENT_SLUG_4)
 
         expect(ti1).to.deep.equal(ts1)
         expect(ti2).to.deep.equal(ts2)
+        expect(ti4).to.deep.equal(ts4)
 
         tournament1 = ti1
         tournament2 = ti2
+        tournament4 = ti4
 
         return true
     })
@@ -197,7 +218,7 @@ describe('startgg Tournament', function() {
         expect(searched![2].getGamerTag()).to.be.equal('Game 3')
     })
 
-    // Tests commented due to filtering by sponsors not working properly on start.gg
+//     Tests commented due to filtering by sponsors not working properly on start.gg
 // 	it('should correctly search attendees by prefix and find no match', async () => {
 // 		const searched: IAttendee[] | null = await tournament1.searchAttendeesBySponsorTag('faketaglol')
 // 		expect(searched).to.be.null
@@ -227,39 +248,168 @@ describe('startgg Tournament', function() {
 // 		expect(searched![3].getGamerTag()).to.be.equal('Flow')
 // 	})
 
-    /*
-	// sets
-	it('should return the correct list of Sets in the Tournament 1', async () => {
-		this.timeout(30000)
+    // getEvents
+    it('should return the correct list of Events in the Tournament 1', async () => {
+        const events = await tournament1.getEvents()
 
-		let sets: GGSet[] = await tournament1.getSets()
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(sets)).to.be.false
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet)
-		})
-		expect(sets.length).to.be.equal(84)
-		return true
-	})
-	xit('should return the correct list of Sets in the Tournament 2', async () => {
-		this.timeout(30000)
+        expect(events.length).to.be.equal(7)
+        const hasDuplicates = (a: IEvent[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(events)).to.be.false
+        events.forEach(event => {
+            expect(event).to.be.an.instanceof(Event)
+        })
+        return true
+    }).timeout(30000)
 
-		let sets: GGSet[] = await tournament2.getSets()
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(sets)).to.be.false
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet)
-		})
-		expect(sets.length).to.be.equal(84)
-		return true
-	})
+    // getPhases
+    it('should return the correct list of Phases in the Tournament 1', async () => {
+        const phases = await tournament1.getPhases()
 
-	// entrants
+        expect(phases.length).to.be.equal(16)
+        const hasDuplicates = (a: IPhase[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(phases)).to.be.false
+        phases.forEach(phase => {
+            expect(phase).to.be.an.instanceof(Phase)
+        })
+        return true
+    }).timeout(30000)
 
-	// attendees
-	*/
+    // getPhaseGroups
+    it('should return the correct list of Phases in the Tournament 1', async () => {
+        const pgs = await tournament1.getPhaseGroups()
+
+        expect(pgs.length).to.be.equal(52)
+        const hasDuplicates = (a: IPhaseGroup[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(pgs)).to.be.false
+        pgs.forEach(phase => {
+            expect(phase).to.be.an.instanceof(PhaseGroup)
+        })
+        return true
+    }).timeout(30000)
+
+    // getSets, using small bracket
+    it('should return the correct list of Sets in the Tournament 1', async () => {
+        const sets = await tournament4.getSets()
+
+        expect(sets.length).to.be.equal(30)
+        const hasDuplicates = (a: IGGSet[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(sets)).to.be.false
+        sets.forEach(set => {
+            expect(set).to.be.an.instanceof(GGSet)
+        })
+        return true
+    }).timeout(30000)
+
+    // getEntrants, using small bracket
+    it('should return the correct list of Entrants in the Tournament 1', async () => {
+        const entrants = await tournament4.getEntrants()
+
+        expect(entrants.length).to.be.equal(16)
+        const hasDuplicates = (a: IEntrant[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(entrants)).to.be.false
+        entrants.forEach(entrant => {
+            expect(entrant).to.be.an.instanceof(Entrant)
+        })
+        return true
+    }).timeout(30000)
+
+    // getAttendees
+    it('should return the correct list of Attendees in the Tournament 1', async () => {
+        const attendees = await tournament4.getAttendees()
+
+        expect(attendees.length).to.be.equal(16)
+        const hasDuplicates = (a: IAttendee[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(attendees)).to.be.false
+        attendees.forEach(attendee => {
+            expect(attendee).to.be.an.instanceof(Attendee)
+        })
+        return true
+    }).timeout(30000)
+
+
+    describe('mocked sophisticated functions unit tests', () => {
+        // getEvents()
+        it('getEvents(), should return the correct events for stubbed value for single bracket', async () => {
+            const myTournament = new Tournament(TOURNAMENT_ID_1, 'Port Priority 7', TOURNAMENT_SLUG_1, null, null, null, testData.mockedVenue)
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedGetEventsTournamentEventsQueryResponse)
+
+            const res = await myTournament.getEvents()
+            sinon.assert.calledOnce(niStub1)
+            expect(JSON.stringify(res)).to.be.equal(JSON.stringify(testData.expectedGetEventsReturnValue))
+            niStub1.restore()
+        })
+
+        // getPhases()
+        it('getPhases(), should return the correct phases for stubbed value for single bracket', async () => {
+            const myTournament = new Tournament(TOURNAMENT_ID_1, 'Port Priority 7', TOURNAMENT_SLUG_1, null, null, null, testData.mockedVenue)
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedGetPhasesTournamentEventsQueryResponse)
+
+            const res = await myTournament.getPhases()
+            sinon.assert.calledOnce(niStub1)
+            expect(await res).to.deep.equal(testData.expectedGetPhasesReturnValue)
+            niStub1.restore()
+        })
+
+        // getPhaseGroups()
+        it('getPhaseGroups(), should return the correct phase groups for stubbed value for single bracket', async () => {
+            const myTournament = new Tournament(TOURNAMENT_ID_1, 'Port Priority 7', TOURNAMENT_SLUG_1, null, null, null, testData.mockedVenue)
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedGetPhaseGroupsTournamentEventsQueryResponse)
+
+            const res = await myTournament.getPhaseGroups()
+            sinon.assert.calledOnce(niStub1)
+            expect(res).to.deep.equal(testData.expectedGetPhaseGroupsReturnValue)
+            niStub1.restore()
+        })
+
+        // getSets(), checking for size due to long object to keep as testData
+        it('getSets(), should return the correct sets for stubbed value for single bracket', async () => {
+            const myTournament = new Tournament(TOURNAMENT_ID_1, 'Port Priority 7', TOURNAMENT_SLUG_1, null, null, null, testData.mockedVenue)
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedGetPhaseGroupsTournamentEventsQueryResponse)
+            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedGetSetsTournamentEventsQueryResponse)
+
+            const res = await myTournament.getSets()
+            sinon.assert.calledOnce(niStub1)
+            sinon.assert.calledOnce(niStub2)
+            expect(res.length).to.deep.equal(testData.expectedGetSetsArraySizeReturnValue)
+            niStub1.restore()
+            niStub2.restore()
+        })
+
+        // getEntrants()
+        it('getEntrants(), should return the correct entrants for stubbed value for single bracket', async () => {
+            const myTournament = new Tournament(TOURNAMENT_ID_1, 'Port Priority 7', TOURNAMENT_SLUG_1, null, null, null, testData.mockedVenue)
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedGetPhaseGroupsTournamentEventsQueryResponse)
+            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedGetEntrantsTournamentEventsQueryResponse)
+
+            const res = await myTournament.getEntrants()
+            sinon.assert.calledOnce(niStub1)
+            sinon.assert.calledOnce(niStub2)
+            expect(res).to.deep.equal(testData.expectedGetEntrantsReturnValue)
+            niStub1.restore()
+            niStub2.restore()
+        })
+
+        // getAttendees()
+        it('getAttendees(), should return the correct attendees for stubbed value for single bracket', async () => {
+            const myTournament = new Tournament(TOURNAMENT_ID_1, 'Port Priority 7', TOURNAMENT_SLUG_1, null, null, null, testData.mockedVenue)
+            const niStub1 = sinon.mock(NI).expects('paginatedQuery').once().returns(testData.mockedGetAttendeesTournamentEventsPaginatedQueryResponse)
+
+            const res = await myTournament.getAttendees()
+            sinon.assert.calledOnce(niStub1)
+            expect(JSON.stringify(res)).to.deep.equal(JSON.stringify(testData.expectedGetAttendeesReturnValue))
+            niStub1.restore()
+        })
+    })
 })

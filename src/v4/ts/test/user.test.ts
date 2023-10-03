@@ -6,8 +6,10 @@ config({path: ROOT})
 import '../lib/util/ErrorHandler'
 
 import {expect} from 'chai'
+import sinon from 'sinon'
 import {User} from '../lib/models/User'
 import Initializer from '../lib/util/Initializer'
+import NI from '../lib/util/NetworkInterface'
 import * as testData from './data/user.testData'
 
 let user1: User, user2: User
@@ -97,20 +99,17 @@ describe('startgg User (has some pending)', () => {
     })
 
     // id
-    it('should get the correct id 1', function() {
-        this.timeout(5000)
+    it('should get the correct id 1', () => {
         expect(user1.getId()).to.be.equal(USER_ID_1)
-    })
-    it('should get the correct id 2', function() {
-        this.timeout(5000)
+    }).timeout(5000)
+    it('should get the correct id 2', () => {
         expect(user2.getId()).to.be.equal(USER_ID_2)
-    })
+    }).timeout(5000)
 
     // player gamertag
-    it('should get the correct player gamer tag 1', function() {
-        this.timeout(5000)
+    it('should get the correct player gamer tag 1', () => {
         expect(user1.getPlayerGamertag()).to.be.equal('David Monster')
-    })
+    }).timeout(5000)
     it('should get the correct player gamer tag 2', function() {
         this.timeout(5000)
         expect(user2.getPlayerGamertag()).to.be.equal('Mike G')
@@ -127,26 +126,37 @@ describe('startgg User (has some pending)', () => {
     })
 
     // rankings (Deprecated)
-    it('should get the most recent standings back 1', async function() {
-        this.timeout(5000)
+    it('should get the most recent standings back 1', async () => {
         expect(await user1.getRecentStandings()).to.have.deep.members(DAVID_MONSTER_PLACEMENTS)
         return true
-    })
+    }).timeout(5000)
     it('should get the most recent standings back 2', async function() {
         this.timeout(5000)
         expect(await user2.getRecentStandings()).to.have.deep.members(MIKE_G_PLACEMENTS)
         return true
     })
 
-    // TODO implement
-    // recent sets
-// 	xit('should get the correct recent sets back 1', async function() {
-// 		this.timeout(5000)
-//
-// 	})
-// 	xit('should get the correct recent sets back 2', async function() {
-// 		this.timeout(5000)
-//
-// 	})
+    describe('mocked sophisticated functions unit tests', () => {
+        // getRecentSets()
+        it('getRecentSets(), should return 14 recent sets for Gluttony', async () => {
+            const myUser = new User(USER_ID_1, 'Great Bio', 'DIS', 'He/Him', null, null, null, null)
+            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedGluttonyRecentSetsResponse)
 
+            const res = await myUser.getRecentSets()
+            sinon.assert.calledOnce(niStub)
+            expect(res.length).to.be.equal(14)
+            niStub.restore()
+        })
+
+        // getRecentStandings()
+        it('getRecentStandings(), should return the correct standings for stubbed value for user', async () => {
+            const myUser = new User(USER_ID_1, 'Great Bio', 'DIS', 'He/Him', null, null, null, null)
+            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedUserRecentStandingsResponse)
+
+            const res = myUser.getRecentStandings()
+            sinon.assert.calledOnce(niStub)
+            expect(JSON.stringify(await res)).to.be.equal(JSON.stringify(testData.mockedUserRecentStandingsRankingsResult))
+            niStub.restore()
+        })
+    })
 })

@@ -207,10 +207,8 @@ export class Phase implements IPhase{
         return GGSet.filterForCompleteSets(await this.getSets(options))
     }
 
-    public async getSetsXMinutesBack(
-        minutesBack: number,
-        options: IGGSetOptions = GGSet.getDefaultSetOptions()
-    ): Promise<IGGSet[]> {
+    public async getSetsXMinutesBack(minutesBack: number, options?: IGGSetOptions): Promise<IGGSet[]> {
+        options = options ?? GGSet.getDefaultSetOptions()
         return GGSet.filterForXMinutesBack(await this.getSets(options), minutesBack)
     }
 }

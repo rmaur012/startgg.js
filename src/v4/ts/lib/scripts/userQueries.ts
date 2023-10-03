@@ -27,8 +27,10 @@ export const userRecentStandings = `query UserRankings($id: ID!) {
 export const userRecentGGSets = `query UserRecentSets($id: ID!) {
 	player(id:$id){
 		id
-		recentSets{
-      		${Schema.set}
+		sets{
+		    nodes{
+      		    ${Schema.set}
+      		}
 		}
 	}
 }`
