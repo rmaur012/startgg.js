@@ -3,22 +3,27 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
+import _ from 'lodash'
+import moment from 'moment'
 import '../lib/util/ErrorHandler'
 import * as log from '../lib/util/Logger'
 
 import chai from 'chai'
 import cap from 'chai-as-promised'
+import sinon from 'sinon'
 chai.use(cap)
 const {expect} = chai
 
 import {IPhase} from '../lib/interfaces/IPhase'
+import {IPhaseGroup} from '../lib/interfaces/IPhaseGroup'
 
+import {Attendee} from '../lib/models/Attendee'
+import {Entrant} from '../lib/models/Entrant'
+import {GGSet} from '../lib/models/GGSet'
 import {Phase} from '../lib/models/Phase'
 import {PhaseGroup} from '../lib/models/PhaseGroup'
-import {GGSet} from '../lib/models/GGSet'
-import {Entrant} from '../lib/models/Entrant'
-import {Attendee} from '../lib/models/Attendee'
 import Initializer from '../lib/util/Initializer'
+import NI from '../lib/util/NetworkInterface'
 import * as testData from './data/phase.testData'
 
 const LOG_LEVEL = log.levels.DEBUG
@@ -33,362 +38,404 @@ const PHASE_1_ATTENDEE_COUNT = 31
 const ID2 = 1242261
 const EVENT_ID_2 = 432884
 const PHASE_2_PG_COUNT = 2
-const PHASE_2_SET_COUNT = 1164
-const PHASE_2_ENTRANT_COUNT = 429
-const PHASE_2_ATTENDEE_COUNT = 200
+const PHASE_2_SET_COUNT = 180
+const PHASE_2_ENTRANT_COUNT = 128
+const PHASE_2_ATTENDEE_COUNT = 128
 
 const ID3 = 1242262
 const EVENT_ID_3 = 432884
 const PHASE_3_PG_COUNT = 1
-const PHASE_3_SET_COUNT = 1164
-const PHASE_3_ENTRANT_COUNT = 226
-const PHASE_3_ATTENDEE_COUNT = 226
+const PHASE_3_SET_COUNT = 11
+const PHASE_3_ENTRANT_COUNT = 8
+const PHASE_3_ATTENDEE_COUNT = 8
 
-let phase1: IPhase 
-let phase2: IPhase 
+let phase1: IPhase
+let phase2: IPhase
 let phase3: IPhase
-// let concurrency = 4
+const concurrency = 4
 
 describe('startgg Phase', function() {
-	this.timeout(10000)
+    this.timeout(10000)
 
-	before(async () => {
-		log.setLogLevel(LOG_LEVEL)
-		Initializer(process.env.API_TOKEN!)
-		phase1 = await Phase.get(ID1, EVENT_ID_1)
-		phase2 = await Phase.get(ID2, EVENT_ID_2)
-		phase3 = await Phase.get(ID3, EVENT_ID_3)
-	})
+    before(async () => {
+        log.setLogLevel(LOG_LEVEL)
+        Initializer(process.env.API_TOKEN!)
+        phase1 = await Phase.get(ID1, EVENT_ID_1)
+        phase2 = await Phase.get(ID2, EVENT_ID_2)
+        phase3 = await Phase.get(ID3, EVENT_ID_3)
+    })
 
-	// id
-	it('should get the correct id of the Phase 1', () => {
-		expect(phase1.getId()).to.be.equal(testData.phase1.id)
-	})	
-	it('should get the correct id of the Phase 2', () => {
-		expect(phase2.getId()).to.be.equal(testData.phase2.id)
-	})
-	it('should get the correct id of the Phase 3', () => {
-		expect(phase3.getId()).to.be.equal(testData.phase3.id)
-	})
+    // id
+    it('should get the correct id of the Phase 1', () => {
+        expect(phase1.getId()).to.be.equal(testData.phase1.id)
+    })
+    it('should get the correct id of the Phase 2', () => {
+        expect(phase2.getId()).to.be.equal(testData.phase2.id)
+    })
+    it('should get the correct id of the Phase 3', () => {
+        expect(phase3.getId()).to.be.equal(testData.phase3.id)
+    })
 
-	// name
-	it('should get the name of the Phase 1', () => {
-		expect(phase1.getName()).to.be.equal(testData.phase1.name)
-	})
-	it('should get the name of the Phase 2', () => {
-		expect(phase2.getName()).to.be.equal(testData.phase2.name)
-	})
-	it('should get the name of the Phase 3', () => {
-		expect(phase3.getName()).to.be.equal(testData.phase3.name)
-	})
+    // name
+    it('should get the name of the Phase 1', () => {
+        expect(phase1.getName()).to.be.equal(testData.phase1.name)
+    })
+    it('should get the name of the Phase 2', () => {
+        expect(phase2.getName()).to.be.equal(testData.phase2.name)
+    })
+    it('should get the name of the Phase 3', () => {
+        expect(phase3.getName()).to.be.equal(testData.phase3.name)
+    })
 
-	// event id
-	it('should get the event id 1', () => {
-		expect(phase1.getEventId()).to.be.equal(EVENT_ID_1)
-	})
-	it('should get the event id 2', () => {
-		expect(phase2.getEventId()).to.be.equal(EVENT_ID_2)
-	})
-	it('should get the event id 3', () => {
-		expect(phase3.getEventId()).to.be.equal(EVENT_ID_3)
-	})
+    // event id
+    it('should get the event id 1', () => {
+        expect(phase1.getEventId()).to.be.equal(EVENT_ID_1)
+    })
+    it('should get the event id 2', () => {
+        expect(phase2.getEventId()).to.be.equal(EVENT_ID_2)
+    })
+    it('should get the event id 3', () => {
+        expect(phase3.getEventId()).to.be.equal(EVENT_ID_3)
+    })
 
-	// num seeds
-	it('should get the Phase num seeds 1', () => {
-		expect(phase1.getNumSeeds()).to.be.equal(testData.phase1.numSeeds)
-	})
-	it('should get the Phase num seeds 2', () => {
-		expect(phase2.getNumSeeds()).to.be.equal(testData.phase2.numSeeds)
-	})
-	it('should get the Phase num seeds 3', () => {
-		expect(phase3.getNumSeeds()).to.be.equal(testData.phase3.numSeeds)
-	})
+    // num seeds
+    it('should get the Phase num seeds 1', () => {
+        expect(phase1.getNumSeeds()).to.be.equal(testData.phase1.numSeeds)
+    })
+    it('should get the Phase num seeds 2', () => {
+        expect(phase2.getNumSeeds()).to.be.equal(testData.phase2.numSeeds)
+    })
+    it('should get the Phase num seeds 3', () => {
+        expect(phase3.getNumSeeds()).to.be.equal(testData.phase3.numSeeds)
+    })
 
-	// group count
-	it('should get the Phase group count 1', () => {
-		expect(phase1.getGroupCount()).to.be.equal(testData.phase1.groupCount)
-	})
-	it('should get the Phase group count 2', () => {
-		expect(phase2.getGroupCount()).to.be.equal(testData.phase2.groupCount)
-	})
-	it('should get the Phase group count 3', () => {
-		expect(phase3.getGroupCount()).to.be.equal(testData.phase3.groupCount)
-	})
+    // group count
+    it('should get the Phase group count 1', () => {
+        expect(phase1.getGroupCount()).to.be.equal(testData.phase1.groupCount)
+    })
+    it('should get the Phase group count 2', () => {
+        expect(phase2.getGroupCount()).to.be.equal(testData.phase2.groupCount)
+    })
+    it('should get the Phase group count 3', () => {
+        expect(phase3.getGroupCount()).to.be.equal(testData.phase3.groupCount)
+    })
 
-	// sets
-	it('should correctly get all sets 1', async function() {
-		this.timeout(60000)
-		await testSets(phase1, PHASE_1_SET_COUNT)
-		return true
-	})
+    // sets
+    it('should correctly get all sets 1', async function() {
+        this.timeout(60000)
+        await testSets(phase1, PHASE_1_SET_COUNT)
+        return true
+    })
 
-	xit('should correctly get all sets 2', async function() {
-		this.timeout(120000)
-		await testSets(phase2, PHASE_2_SET_COUNT)
-		return true
-	})
+    it('should correctly get all sets 2', async function() {
+        this.timeout(120000)
+        await testSets(phase2, PHASE_2_SET_COUNT)
+        return true
+    })
 
-	xit('should correctly get all sets 3', async function() {
-		this.timeout(60000)
-		await testSets(phase3, PHASE_3_SET_COUNT)
-		return true
-	})
+    it('should correctly get all sets 3', async function() {
+        this.timeout(60000)
+        await testSets(phase3, PHASE_3_SET_COUNT)
+        return true
+    })
 
-	// entrants
-	it('should correctly get all entrants 1', async function() {
-		this.timeout(60000)
-		await testEntrants(phase1, PHASE_1_ENTRANT_COUNT)
-		return true
-	})
-	xit('should correctly get all entrants 2', async function() {
-		this.timeout(30000)
-		await testEntrants(phase2, PHASE_2_ENTRANT_COUNT)
-		return true
-	})
-	it('should correctly get all entrants 3', async function() {
-		this.timeout(30000)
-		await testEntrants(phase3, PHASE_3_ENTRANT_COUNT)
-		return true
-	})
-	
-	// attendee
-	it('should correctly get all attendees 1', async function() {
-		this.timeout(30000)
-		await testAttendees(phase1, PHASE_1_ATTENDEE_COUNT)
-		return true
-	})
-	xit('should correctly get all attendees 2', async function() {
-		this.timeout(30000)
-		await testAttendees(phase2, PHASE_2_ATTENDEE_COUNT)
-		return true
-	})
-	it('should correctly get all attendees 3', async function() {
-		this.timeout(60000)
-		await testAttendees(phase3, PHASE_3_ATTENDEE_COUNT)
-		return true
-	})
+    // entrants
+    it('should correctly get all entrants 1', async function() {
+        this.timeout(60000)
+        await testEntrants(phase1, PHASE_1_ENTRANT_COUNT)
+        return true
+    })
+    it('should correctly get all entrants 2', async function() {
+        this.timeout(30000)
+        await testEntrants(phase2, PHASE_2_ENTRANT_COUNT)
+        return true
+    })
+    it('should correctly get all entrants 3', async function() {
+        this.timeout(30000)
+        await testEntrants(phase3, PHASE_3_ENTRANT_COUNT)
+        return true
+    })
 
-	// phase groups
-	it('should correctly get all phase groups 1', async function() {
-		this.timeout(30000)
-		await testPhaseGroups(phase1, PHASE_1_PG_COUNT)
-		return true
-	})
-	it('should correctly get all phase groups 2', async function() {
-		this.timeout(30000)
-		await testPhaseGroups(phase2, PHASE_2_PG_COUNT)
-		return true
-	})
-	it('should correctly get all phase groups 3', async function() {
-		this.timeout(30000)
-		await testPhaseGroups(phase3, PHASE_3_PG_COUNT)
-		return true
-	})
+    // attendee
+    it('should correctly get all attendees 1', async function() {
+        this.timeout(30000)
+        await testAttendees(phase1, PHASE_1_ATTENDEE_COUNT)
+        return true
+    })
+    it('should correctly get all attendees 2', async function() {
+        this.timeout(30000)
+        await testAttendees(phase2, PHASE_2_ATTENDEE_COUNT)
+        return true
+    })
+    it('should correctly get all attendees 3', async function() {
+        this.timeout(60000)
+        await testAttendees(phase3, PHASE_3_ATTENDEE_COUNT)
+        return true
+    })
 
-	/*
-	it('should correctly get all phase groups', async () => {
-		this.timeout(45000)
+    // phase groups
+    it('should correctly get all phase groups 1', async function() {
+        this.timeout(30000)
+        await testPhaseGroups(phase1, PHASE_1_PG_COUNT)
+        return true
+    })
+    it('should correctly get all phase groups 2', async function() {
+        this.timeout(30000)
+        await testPhaseGroups(phase2, PHASE_2_PG_COUNT)
+        return true
+    })
+    it('should correctly get all phase groups 3', async function() {
+        this.timeout(30000)
+        await testPhaseGroups(phase3, PHASE_3_PG_COUNT)
+        return true
+    })
 
-		let phaseGroups1 = await phase1.getPhaseGroups({concurrency: concurrency})
 
-		expect(phaseGroups1.length).to.be.equal(16)
+    it('should correctly get all phase groups', async () => {
+        this.timeout(45000)
 
-		var hasDuplicates = function(a: Array<PhaseGroup>) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(phaseGroups1)).to.be.false
+        const phaseGroups1 = await phase1.getPhaseGroups()
 
-		phaseGroups1.forEach(set => {
-			expect(set).to.be.an.instanceof(PhaseGroup)
-		})
+        expect(phaseGroups1.length).to.be.equal(1)
 
-		return true
-	})
+        const hasDuplicates = (a: IPhaseGroup[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(phaseGroups1)).to.be.false
 
-	it('should correctly get all phase groups 2', async () => {
-		this.timeout(45000)
-		
-		let phaseGroups2 = await phase2.getPhaseGroups({concurrency: concurrency})
+        phaseGroups1.forEach(set => {
+            expect(set).to.be.an.instanceof(PhaseGroup)
+        })
 
-		expect(phaseGroups2.length).to.be.equal(32)
+        return true
+    })
 
-		var hasDuplicates = function(a: Array<PhaseGroup>) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(phaseGroups2)).to.be.false
+    it('should correctly get all phase groups 2', async () => {
+        this.timeout(45000)
 
-		phaseGroups2.forEach(set => {
-			expect(set).to.be.an.instanceof(PhaseGroup)
-		})
+        const phaseGroups2 = await phase2.getPhaseGroups()
 
-		return true
-	})
+        expect(phaseGroups2.length).to.be.equal(2)
 
-	it('should correctly get all phase groups 3', async () => {
-		this.timeout(45000)
-		
-		let phaseGroups3 = await phase3.getPhaseGroups({concurrency: concurrency})
+        const hasDuplicates = (a: IPhaseGroup[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(phaseGroups2)).to.be.false
 
-		expect(phaseGroups3.length).to.be.equal(16)
+        phaseGroups2.forEach(set => {
+            expect(set).to.be.an.instanceof(PhaseGroup)
+        })
 
-		var hasDuplicates = function(a: Array<PhaseGroup>) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(phaseGroups3)).to.be.false
+        return true
+    })
 
-		phaseGroups3.forEach(set => {
-			expect(set).to.be.an.instanceof(PhaseGroup)
-		})
+    it('should correctly get all phase groups 3', async () => {
+        this.timeout(45000)
 
-		return true
-	})
+        const phaseGroups3 = await phase3.getPhaseGroups()
 
-	it('should correctly get all sets for a phase', async () => {
-		this.timeout(30000)
+        expect(phaseGroups3.length).to.be.equal(1)
 
-		let sets1 = await phase1.getSets({concurrency: concurrency})
+        const hasDuplicates = (a: IPhaseGroup[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(phaseGroups3)).to.be.false
 
-		expect(sets1.length).to.be.equal(248)
+        phaseGroups3.forEach(set => {
+            expect(set).to.be.an.instanceof(PhaseGroup)
+        })
 
-		sets1.forEach(set => {
-			expect(set).to.be.instanceof(GGSet)
-		})
+        return true
+    })
 
-		return true
-	})
+    it('should correctly get all sets for a phase', async () => {
+        this.timeout(30000)
 
-	xit('should correctly get all sets for a phase 2', async () => {
-		this.timeout(45000)
-		
-		let sets2 = await phase2.getSets({concurrency: concurrency})
+        const sets1 = await phase1.getSets()
 
-		expect(sets2.length).to.be.equal(1292)
+        expect(sets1.length).to.be.equal(61)
 
-		sets2.forEach(set => {
-			expect(set).to.be.instanceof(GGSet)
-		})
+        sets1.forEach(set => {
+            expect(set).to.be.instanceof(GGSet)
+        })
 
-		return true
-	})
+        return true
+    })
 
-	it('should correctly get all sets for a phase 3', async () => {
-		this.timeout(45000)
-		
-		let sets3 = await phase3.getSets({concurrency: concurrency})
+// Easy to reach rate limit here
+// 	xit('should correctly get all sets for a phase 2', async () => {
+// 		let sets2 = await phase2.getSets()
+//
+// 		expect(sets2.length).to.be.equal(180)
+//
+// 		sets2.forEach(set => {
+// 			expect(set).to.be.instanceof(GGSet)
+// 		})
+//
+// 		return true
+// 	}).timeout(45000)
 
-		expect(sets3.length).to.be.equal(450)
+    it('should correctly get all sets for a phase 3', async () => {
+        const sets3 = await phase3.getSets()
 
-		sets3.forEach(set => {
-			expect(set).to.be.instanceof(GGSet)
-		})
+        expect(sets3.length).to.be.equal(11)
 
-		return true
-	})
+        sets3.forEach(set => {
+            expect(set).to.be.instanceof(GGSet)
+        })
 
-	it('should correctly get all players for a phase', async () => {
-		this.timeout(30000)
-		
-		let players1 = await phase1.getPlayers({concurrency: concurrency})
+        return true
+    }).timeout(45000)
 
-		expect(players1.length).to.be.equal(156)
+//     // getPlayers() isnt a real function?
+// 	it('should correctly get all players for a phase', async () => {
+// 		this.timeout(30000)
+//
+// 		let players1 = await phase1.getPlayers({concurrency: concurrency})
+//
+// 		expect(players1.length).to.be.equal(156)
+//
+// 		players1.forEach(set => {
+// 			expect(set).to.be.instanceof(Entrant)
+// 		})
+//
+// 		return true
+// 	})
 
-		players1.forEach(set => {
-			expect(set).to.be.instanceof(Entrant)
-		})
+// //     getPlayers() isnt a thing?
+// 	xit('should correctly get all players for a phase', async () => {
+// 		this.timeout(30000)
+//
+// 		let players2 = await phase2.getPlayers({concurrency: concurrency})
+//
+// 		expect(players2.length).to.be.equal(678)
+//
+// 		players2.forEach(set => {
+// 			expect(set).to.be.instanceof(Entrant)
+// 		})
+//
+// 		return true
+// 	})
 
-		return true
-	})
+// //     getEventById() isnt a thing?
+// 	xit('should correctly get sets x minutes back', async () => {
+// 		this.timeout(30000)
+//
+// 		let minutesBack = 5
+// 		// getEventById() doesnt exist for Event class?
+// 		let event = await Event.getEventById(phase1.getEventId(), {})
+// 		let eventDate = moment(event.getStartTime() as Date).add(30, 'minutes').toDate()
+//
+// 		let clock = sinon.useFakeTimers(eventDate)
+// 		let sets = await phase1.getSetsXMinutesBack(minutesBack)
+// 		expect(sets.length).to.be.equal(5)
+// 		sets.forEach(set=> {
+// 			expect(set).to.be.instanceof(GGSet)
+//
+// 			let now = moment()
+// 			let then = moment(set.getCompletedAt() as Date)
+// 			let diff = moment.duration(now.diff(then)).minutes()
+// 			expect(diff <= minutesBack && diff >= 0 && set.getIsComplete()).to.be.true
+// 		})
+// 		clock.restore()
+// 		return true
+// 	})
 
-	it('should correctly get all players for a phase', async () => {
-		this.timeout(30000)
-		
-		let players2 = await phase2.getPlayers({concurrency: concurrency})
+    describe('mocked sophisticated functions unit tests', () => {
+        // getPhaseGroups()
+        // getSeeds()
+        // getEntrants()
+        it('getEntrants(), should return the correct entrants for stubbed value for single bracket', async () => {
+            const myPhase = new Phase(ID3, EVENT_ID_3, 'Top 8', 8, 1)
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedTop8PhasePaginatedDataQueryResponse)
+            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedTop8GetEntrantsClusterQueryResponse)
 
-		expect(players2.length).to.be.equal(678)
+            const res = myPhase.getEntrants()
+            sinon.assert.calledOnce(niStub1)
+            expect(await res).to.deep.equal(testData.expectedTop8PhaseGetEntrantsReturnValue)
+            niStub1.restore()
+            niStub2.restore()
+        })
 
-		players2.forEach(set => {
-			expect(set).to.be.instanceof(Entrant)
-		})
+        // getAttendees()
+        it('getAttendees(), should return the correct attendees for stubbed value for single bracket', async () => {
+            const myPhase = new Phase(ID3, EVENT_ID_3, 'Top 8', 8, 1)
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedTop8PhasePaginatedDataQueryResponse)
+            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedTop8GetAttendeesClusterQueryResponse)
 
-		return true
-	})
+            const res = myPhase.getAttendees()
+            sinon.assert.calledOnce(niStub1)
+            expect(await res).to.deep.equal(testData.expectedTop8PhaseGetAttendeesReturnValue)
+            niStub1.restore()
+            niStub2.restore()
+        })
 
-	it('should correctly get sets x minutes back', async () => {
-		this.timeout(30000)
+        // getSets
+        it('getSets(), should return the correct sets for stubbed value for single bracket', async () => {
+            const myPhase = new Phase(ID3, EVENT_ID_3, 'Top 8', 8, 1)
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedTop8PhasePaginatedDataQueryResponse)
+            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedTop8GetSetsClusterQueryResponse)
 
-		let minutesBack = 5
-		let event = await Event.getEventById(phase1.getEventId(), {})
-		let eventDate = moment(event.getStartTime() as Date).add(30, 'minutes').toDate()
-
-		let clock = sinon.useFakeTimers(eventDate)
-		let sets = await phase1.getSetsXMinutesBack(minutesBack)
-		expect(sets.length).to.be.equal(5)
-		sets.forEach(set=> {
-			expect(set).to.be.instanceof(GGSet)
-
-			let now = moment()
-			let then = moment(set.getCompletedAt() as Date)
-			let diff = moment.duration(now.diff(then)).minutes()
-			expect(diff <= minutesBack && diff >= 0 && set.getIsComplete()).to.be.true
-		})
-		clock.restore()
-		return true
-	})
-	*/
+            const res = myPhase.getSets()
+            sinon.assert.calledOnce(niStub1)
+            expect(await res).to.deep.equal(testData.expectedTop8PhaseGetSetsReturnValue)
+            niStub1.restore()
+            niStub2.restore()
+        })
+    })
 })
 
-//
 async function testSets(phase: IPhase, expected: number){
-	const arr = await phase.getSets()
+    const arr = await phase.getSets()
 
-	arr.forEach(set => {
-		expect(set).to.be.an.instanceof(GGSet)
-		expect(
-			arr.filter(x => x.getId() === set.getId()).length,
-			'Set array must not have duplicates! Found: ' + set.getId()
-		).to.be.equal(1)
-	})
-	expect(arr.length).to.be.equal(expected)
+    arr.forEach(set => {
+        expect(set).to.be.an.instanceof(GGSet)
+        expect(
+            arr.filter(x => x.getId() === set.getId()).length,
+            'Set array must not have duplicates! Found: ' + set.getId()
+        ).to.be.equal(1)
+    })
+    expect(arr.length).to.be.equal(expected)
 
 }
 
 async function testEntrants(phase: IPhase, expected: number){
-	const arr = await phase.getEntrants()
+    const arr = await phase.getEntrants()
 
-	arr.forEach(entrant => {
-		expect(entrant).to.be.an.instanceof(Entrant)
-		expect(
-			arr.filter(x => x.getId() === entrant.getId()).length,
-			'Entrant array must not have duplicates! Found: ' + entrant.getId()
-		).to.be.equal(1)
-	})
-	expect(arr.length).to.be.equal(expected)
-	
+    arr.forEach(entrant => {
+        expect(entrant).to.be.an.instanceof(Entrant)
+        expect(
+            arr.filter(x => x.getId() === entrant.getId()).length,
+            'Entrant array must not have duplicates! Found: ' + entrant.getId()
+        ).to.be.equal(1)
+    })
+    expect(arr.length).to.be.equal(expected)
+
 }
 
 async function testAttendees(phase: IPhase, expected: number){
-	const arr = await phase.getAttendees()
+    const arr = await phase.getAttendees()
 
-	arr.forEach(attendee => {
-		expect(attendee).to.be.an.instanceof(Attendee)
-		expect(
-			arr.filter(x => x.getId() === attendee.getId()).length,
-			'Attendee array must not have duplicates! Found: ' + attendee.getId()
-		).to.be.equal(1)
-	})
-	expect(arr.length).to.be.equal(expected)
+    arr.forEach(attendee => {
+        expect(attendee).to.be.an.instanceof(Attendee)
+        expect(
+            arr.filter(x => x.getId() === attendee.getId()).length,
+            'Attendee array must not have duplicates! Found: ' + attendee.getId()
+        ).to.be.equal(1)
+    })
+    expect(arr.length).to.be.equal(expected)
 }
 
 async function testPhaseGroups(phase: IPhase, expected: number){
-	const arr = await phase.getPhaseGroups()
+    const arr = await phase.getPhaseGroups()
 
-	arr.forEach(group => {
-		expect(group).to.be.an.instanceof(PhaseGroup)
-		expect(
-			arr.filter(x => x.getId() === group.getId()).length,
-			'Phase Group array must not have duplicates! Found: ' + group.getId()
-		).to.be.equal(1)
-	})
-	expect(arr.length).to.be.equal(expected)
+    arr.forEach(group => {
+        expect(group).to.be.an.instanceof(PhaseGroup)
+        expect(
+            arr.filter(x => x.getId() === group.getId()).length,
+            'Phase Group array must not have duplicates! Found: ' + group.getId()
+        ).to.be.equal(1)
+    })
+    expect(arr.length).to.be.equal(expected)
 
 }

@@ -1,6 +1,6 @@
 
 export interface IStreams{
-	/*
+    /*
 	id: number,
     enabled: boolean | null,
     followerCount: number | null,
@@ -17,28 +17,28 @@ export interface IStreams{
     streamTypeId: number | null,
 	*/
 
-	getId(): number,
-	getEnabled(): boolean | null,
-	getFollowerCount(): number | null,
-	getIsOnline(): boolean | null,
-	getNumSetups(): number | null,
-	getParentStreamId(): number | null,
-	getStreamGame(): string | null,
-	getStreamId(): string | null,
-	getStreamLogo(): string | null
-	getStreamName(): string,
-	getStreamSource(): 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null,
-	getStreamStatus(): string | null,
-	getStreamType(): number | null,
-	getStreamTypeId(): number | null
+    getId(): number,
+    getEnabled(): boolean | null,
+    getFollowerCount(): number | null,
+    getIsOnline(): boolean | null,
+    getNumSetups(): number | null,
+    getParentStreamId(): number | null,
+    getStreamGame(): string | null,
+    getStreamId(): string | null,
+    getStreamLogo(): string | null
+    getStreamName(): string,
+    getStreamSource(): 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null,
+    getStreamStatus(): string | null,
+    getStreamType(): number | null,
+    getStreamTypeId(): number | null
 }
 
 export interface IStreamsDataFull{
-	stream: IStreamsData
+    stream: IStreamsData
 }
 
 export interface IStreamsData{
-	id: number,
+    id: number,
     enabled: boolean | null,
     followerCount: number | null,
     isOnline: boolean | null,

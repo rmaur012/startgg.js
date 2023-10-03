@@ -12,8 +12,6 @@ const {expect} = chai
 import {Event, Phase, PhaseGroup, IPhase, GGSet, Player} from '../lib/internal'
 import Cache from '../lib/util/Cache'
 
-import expected from './data/testSets'
-
 
 let ID1 = 111483;
 let ID2 = 45262;

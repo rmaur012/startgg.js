@@ -22,7 +22,7 @@ export const tournamentOrganizer = `query organizerQuery($slug: String!){
 export const tournamentVenue = `query tournamentVenue($id: ID!){
     tournament(id: $id){
 		${Schema.venue}
-	}	
+	}
 }`
 
 export const tournamentEntrants =
@@ -59,7 +59,7 @@ export const tournamentAttendees =
                 ${Schema.attendee}
             }
         }
-    }  
+    }
 }`
 
 export const tournamentAttendeeSearch = `query SearchTournamentAttendeesQuery($id:ID!, $smashtag:String){
@@ -121,7 +121,7 @@ export const tournamentPhases = `query TournamentPhases($id: ID!){
                 ${Schema.phase}
             }
         }
-    }   
+    }
 }`
 
 export const tournamentPhaseGroups = `query TournamentPhaseGroups($id: ID!){
@@ -131,7 +131,7 @@ export const tournamentPhaseGroups = `query TournamentPhaseGroups($id: ID!){
                 ${Schema.phaseGroup}
             }
         }
-    }   
+    }
 }`
 
 // WARNING THIS DOES NOT WORK CURRENTLY DUE TO RECURSIVE LIMITATIONS, Use tournamentPhaseGroupIds instead **/
@@ -144,7 +144,7 @@ export const tournamentSets = `query TournamentSets($id: ID!){
                 }
             }
         }
-    }   
+    }
 }`
 
 export const tournamentPhaseGroupIds = `query PhaseGroupIdQuery($id: ID!){

@@ -21,7 +21,7 @@ query PhaseSeedQuery($id: ID!, $page: Int, $perPage: Int, $sortBy: String, $filt
 				${Schema.seeds}
 			}
 		}
-	}	
+	}
 }`
 
 export const phasePhaseGroups2 = `
@@ -47,11 +47,11 @@ query PhaseGroupsQuery($id:ID!){
 
 export const phaseSets = `
 query PhaseSets(
-	$eventId:Int, 
-	$page: Int, 
-	$perPage: Int, 
-	$sortType: SetSortType, 
-	$filters: SetFilters, 
+	$eventId:Int,
+	$page: Int,
+	$perPage: Int,
+	$sortType: SetSortType,
+	$filters: SetFilters,
 	$hasPermissions: Boolean){
 
 	event(id: $eventId){
@@ -88,7 +88,7 @@ query PhaseEntrants($id: ID!, $page: Int, $perPage: Int, $sortBy: String, $filte
 			  }
 		  }
 		}
-	}	
+	}
 }`
 
 export const phaseAttendees = `
@@ -109,5 +109,5 @@ query PhaseAttendees($id: ID!, $page: Int, $perPage: Int, $sortBy: String, $filt
 			  }
 		  }
 		}
-	}	
+	}
 }`

@@ -6,12 +6,12 @@ export const phaseGroup = `query PhaseGroupQuery($id: ID!){
 }
 `
 
-export const phaseGroupSeeds = 
+export const phaseGroupSeeds =
 `query PhaseGroupSeedsQuery($id: ID!, $page: Int, $perPage: Int, $sortBy: String, $filter: SeedPageFilter){
 	phaseGroup(id: $id){
 		paginatedSeeds(query: {
-			page: $page, 
-			perPage: $perPage, 
+			page: $page,
+			perPage: $perPage,
 			sortBy: $sortBy,
 			filter: $filter
 		}){
@@ -24,12 +24,12 @@ export const phaseGroupSeeds =
 }
 `
 
-export const phaseGroupSeedStandings = 
+export const phaseGroupSeedStandings =
 `query PhaseGroupSeedsQuery($id: ID!, $page: Int, $perPage: Int, $orderBy: String, $filter: SeedPageFilter){
 	phaseGroup(id: $id){
-		paginatedSeeds(query: {			
-			page: $page, 
-			perPage: $perPage, 
+		paginatedSeeds(query: {
+			page: $page,
+			perPage: $perPage,
 			sortBy: $sortBy,
 			filter: $filter
 		}){
@@ -43,7 +43,7 @@ export const phaseGroupSeedStandings =
 	}
 }`
 
-export const phaseGroupSets = 
+export const phaseGroupSets =
 `query PhaseGroupEntrants($id: ID!, $page: Int, $perPage: Int, $sortType: SetSortType, $filters: SetFilters){
 	phaseGroup(id: $id){
 	  paginatedSets(page:$page, perPage:$perPage, sortType:$sortType, filters:$filters){
@@ -55,7 +55,7 @@ export const phaseGroupSets =
 	}
   }`
 
-export const phaseGroupEntrants = 
+export const phaseGroupEntrants =
 `query PhaseGroupEntrants($id: ID!, $page: Int, $perPage: Int, $sortBy: String, $filter: SeedPageFilter){
 	phaseGroup(id: $id){
 		paginatedSeeds(query: {
@@ -71,10 +71,10 @@ export const phaseGroupEntrants =
 				}
 			}
 		}
-	}	
+	}
 }`
 
-export const phaseGroupAttendees = 
+export const phaseGroupAttendees =
 `query PhaseGroupEntrants($id: ID!, $page: Int, $perPage: Int, $sortBy: String, $filter: SeedPageFilter){
 	phaseGroup(id: $id){
 		paginatedSeeds(query: {
@@ -92,5 +92,5 @@ export const phaseGroupAttendees =
 				}
 			}
 		}
-	}	
+	}
 }`

@@ -1,61 +1,54 @@
-import NI from '../util/NetworkInterface'
 import * as queries from '../scripts/tournamentQueries'
+import NI from '../util/NetworkInterface'
 
 import {IOrganizer, IOrganizerData} from '../interfaces/IOrganizer'
 
 export class Organizer implements IOrganizer{
 
-	public static parse(data: IOrganizerData): IOrganizer{
-		const organizer = new Organizer(
-			data.tournament.owner.id, data.tournament.owner.bio, data.tournament.owner.email,
-			data.tournament.owner.genderPronoun, data.tournament.owner.player.gamerTag
-		)
-		return organizer
-	}
-	
-	public static async getByTournament(tournamentSlug: string): Promise<IOrganizer> {
-	    console.log('Getting organizer data for tournament with slug: %s', tournamentSlug)
-		const data = await NI.query(queries.tournamentOrganizer, {slug: tournamentSlug})
-		return Organizer.parse(data)
-	}
+    public static parse(data: IOrganizerData): IOrganizer{
+        const organizer = new Organizer(
+            data.tournament.owner.id, data.tournament.owner.bio,
+            data.tournament.owner.genderPronoun, data.tournament.owner.player.gamerTag
+        )
+        return organizer
+    }
 
-	private id: number | null
-	private bio: string | null
-	private email: string | null
-	private genderPronoun: string | null
-	private gamerTag: string | null
+    public static async getByTournament(tournamentSlug: string): Promise<IOrganizer> {
+        console.log('Getting organizer data for tournament with slug: %s', tournamentSlug)
+        const data = await NI.query(queries.tournamentOrganizer, {slug: tournamentSlug})
+        return Organizer.parse(data)
+    }
 
-	constructor(
-		id: number | null, 
-		bio: string | null,
-		email: string | null,
-		genderPronoun: string | null,
-		gamerTag: string | null
-	){
-		this.id = id
-		this.bio = bio
-		this.email = email
-		this.genderPronoun = genderPronoun
-		this.gamerTag = gamerTag
-	}
+    private id: number | null
+    private bio: string | null
+    private genderPronoun: string | null
+    private gamerTag: string | null
 
-	public getId() {
-		return this.id
-	}
+    constructor(
+        id: number | null,
+        bio: string | null,
+        genderPronoun: string | null,
+        gamerTag: string | null
+    ){
+        this.id = id
+        this.bio = bio
+        this.genderPronoun = genderPronoun
+        this.gamerTag = gamerTag
+    }
 
-	public getBio() {
-		return this.bio
-	}
-	
-	public getEmail() {
-		return this.email
-	}
-	
-	public getGenderPronoun() {
-		return this.genderPronoun
-	}
+    public getId() {
+        return this.id
+    }
 
-	public getGamerTag() {
-		return this.gamerTag
-	}
+    public getBio() {
+        return this.bio
+    }
+
+    public getGenderPronoun() {
+        return this.genderPronoun
+    }
+
+    public getGamerTag() {
+        return this.gamerTag
+    }
 }

@@ -3,23 +3,37 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
+import _ from 'lodash'
 import '../lib/util/ErrorHandler'
-//import * as log from '../lib/util/Logger'
+import * as log from '../lib/util/Logger'
 
-import moment from 'moment'
 import chai from 'chai'
 import cap from 'chai-as-promised'
+import moment from 'moment'
+import sinon from 'sinon'
 chai.use(cap)
 const {expect} = chai
 
-import {ITournament} from '../lib/interfaces/ITournament'
 import {IAttendee} from '../lib/interfaces/IAttendee'
+import {IEntrant} from '../lib/interfaces/IEntrant'
+import {IEvent} from '../lib/interfaces/IEvent'
+import {IGGSet} from '../lib/interfaces/IGGSet'
+import {IPhase} from '../lib/interfaces/IPhase'
+import {IPhaseGroup} from '../lib/interfaces/IPhaseGroup'
+import {ITournament} from '../lib/interfaces/ITournament'
 
+import {Attendee} from '../lib/models/Attendee'
+import {Entrant} from '../lib/models/Entrant'
+import {Event} from '../lib/models/Event'
+import {GGSet} from '../lib/models/GGSet'
+import {Phase} from '../lib/models/Phase'
+import {PhaseGroup} from '../lib/models/PhaseGroup'
 import {Tournament} from '../lib/models/Tournament'
 import Initializer from '../lib/util/Initializer'
+import NI from '../lib/util/NetworkInterface'
 import * as testData from './data/tournament.testData'
 
-let tournament1: ITournament, tournament2: ITournament, tournament3: ITournament
+let tournament1: ITournament, tournament2: ITournament, tournament4: ITournament
 
 const TOURNAMENT_ID_1 = 432884
 const TOURNAMENT_SLUG_1 = 'tournament/port-priority-7'
@@ -30,225 +44,181 @@ const TOURNAMENT_SLUG_2 = 'tournament/genesis-9-1'
 const TOURNAMENT_ID_3 = 449011
 const TOURNAMENT_SLUG_3 = 'tournament/let-s-make-big-moves-2023'
 
+const TOURNAMENT_ID_4 = 594032
+const TOURNAMENT_SLUG_4 = 'tournament/unfunstuff-smash-ultimate-unfunday-mondays-week-40'
+
 describe('startgg Tournament', function() {
-	this.timeout(10000)
+    this.timeout(10000)
 
-	before(async function() {
-		this.timeout(20000)
+    before(async function() {
+        this.timeout(20000)
 
-		Initializer(process.env.API_TOKEN!)
-		console.log("Getting tourneys by id...")
-		const ti1 = await Tournament.getById(TOURNAMENT_ID_1)
-		const ti2 = await Tournament.getById(TOURNAMENT_ID_2)
-		const ti3 = await Tournament.getById(TOURNAMENT_ID_3)
-		console.log("Getting tourneys by slug...")
-		const ts1 = await Tournament.get(TOURNAMENT_SLUG_1)
-		const ts2 = await Tournament.get(TOURNAMENT_SLUG_2)
-		const ts3 = await Tournament.get(TOURNAMENT_SLUG_3)
+        Initializer(process.env.API_TOKEN!)
+        console.log('Getting tourneys by id...')
+        const ti1 = await Tournament.getById(TOURNAMENT_ID_1)
+        const ti2 = await Tournament.getById(TOURNAMENT_ID_2)
+        const ti4 = await Tournament.getById(TOURNAMENT_ID_4)
+        console.log('Getting tourneys by slug...')
+        const ts1 = await Tournament.get(TOURNAMENT_SLUG_1)
+        const ts2 = await Tournament.get(TOURNAMENT_SLUG_2)
+        const ts4 = await Tournament.get(TOURNAMENT_SLUG_4)
 
-		expect(ti1).to.deep.equal(ts1)
-		expect(ti2).to.deep.equal(ts2)
-		expect(ti3).to.deep.equal(ts3)
+        expect(ti1).to.deep.equal(ts1)
+        expect(ti2).to.deep.equal(ts2)
+        expect(ti4).to.deep.equal(ts4)
 
-		tournament1 = ti1
-		tournament2 = ti2
-		tournament3 = ti3
+        tournament1 = ti1
+        tournament2 = ti2
+        tournament4 = ti4
 
-		return true
-	})
+        return true
+    })
 
-	// id
-	it('should get the correct tournament id 1', () => {
-		expect(tournament1.getId()).to.be.equal(testData.tournament1.id)
-	})
-	it('should get the correct tournament id 2', () => {
-		expect(tournament2.getId()).to.be.equal(testData.tournament2.id)
-	})
-	it('should get the correct tournament id 3', () => {
-		expect(tournament3.getId()).to.be.equal(testData.tournament3.id)
-	})
+    // id
+    it('should get the correct tournament id 1', () => {
+        expect(tournament1.getId()).to.be.equal(testData.tournament1.id)
+    })
+    it('should get the correct tournament id 2', () => {
+        expect(tournament2.getId()).to.be.equal(testData.tournament2.id)
+    })
 
-	// name
-	it('should get the correct tournament name 1', () => {
-		expect(tournament1.getName()).to.be.equal(testData.tournament1.name)
-	})
-	it('should get the correct tournament name 2', () => {
-		expect(tournament2.getName()).to.be.equal(testData.tournament2.name)
-	})
-	it('should get the correct tournament name 3', () => {
-		expect(tournament3.getName()).to.be.equal(testData.tournament3.name)
-	})
-	
-	// slug
-	it('should get the correct tournament slug 1', () => {
-		expect(tournament1.getSlug()).to.be.equal(testData.tournament1.slug)
-	})
-	it('should get the correct tournament slug 2', () => {
-		expect(tournament2.getSlug()).to.be.equal(testData.tournament2.slug)
-	})
-	it('should get the correct tournament slug 3', () => {
-		expect(tournament3.getSlug()).to.be.equal(testData.tournament3.slug)
-	})
-	
-	// timezone
-	it('should get the correct tournament timezone 1', () => {
-		expect(tournament1.getTimezone()).to.be.equal(testData.tournament1.timezone)
-	})
-	it('should get the correct tournament timezone 2', () => {
-		expect(tournament2.getTimezone()).to.be.equal(testData.tournament2.timezone)
-	})
-	it('should get the correct tournament timezone 3', () => {
-		expect(tournament3.getTimezone()).to.be.equal(testData.tournament3.timezone)
-	})
+    // name
+    it('should get the correct tournament name 1', () => {
+        expect(tournament1.getName()).to.be.equal(testData.tournament1.name)
+    })
+    it('should get the correct tournament name 2', () => {
+        expect(tournament2.getName()).to.be.equal(testData.tournament2.name)
+    })
 
-	// start time
-	it('should get the correct tournament end time 1', () => {
-		expect(moment(tournament1.getStartTime()).isSame(moment.unix(testData.tournament1.startAt!).toDate())).to.be.true
-	})
-	it('should get the correct tournament end time 2', () => {
-		expect(moment(tournament2.getStartTime()).isSame(moment.unix(testData.tournament2.startAt!).toDate())).to.be.true
-	})
-	it('should get the correct tournament end time 3', () => {
-		expect(moment(tournament3.getStartTime()).isSame(moment.unix(testData.tournament3.startAt!).toDate())).to.be.true
-	})
+    // slug
+    it('should get the correct tournament slug 1', () => {
+        expect(tournament1.getSlug()).to.be.equal(testData.tournament1.slug)
+    })
+    it('should get the correct tournament slug 2', () => {
+        expect(tournament2.getSlug()).to.be.equal(testData.tournament2.slug)
+    })
 
-	// start time string
-	it('should get the correct tournament start time 1', () => {
-		expect(tournament1.getStartTimeString()).to.be.equal(String(moment.unix(testData.tournament1.startAt!).toDate()))
-	})
-	it('should get the correct tournament start time 2', () => {
-		expect(tournament2.getStartTimeString()).to.be.equal(String(moment.unix(testData.tournament2.startAt!).toDate()))
-	})
-	it('should get the correct tournament start time 3', () => {
-		expect(tournament3.getStartTimeString()).to.be.equal(String(moment.unix(testData.tournament3.startAt!).toDate()))
-	})
+    // timezone
+    it('should get the correct tournament timezone 1', () => {
+        expect(tournament1.getTimezone()).to.be.equal(testData.tournament1.timezone)
+    })
+    it('should get the correct tournament timezone 2', () => {
+        expect(tournament2.getTimezone()).to.be.equal(testData.tournament2.timezone)
+    })
 
-	// end time
-	it('should get the correct tournament end time 1', () => {
-		expect(moment(tournament1.getEndTime()).isSame(moment.unix(testData.tournament1.endAt!).toDate())).to.be.true
-	})
-	it('should get the correct tournament end time 2', () => {
-		expect(moment(tournament2.getEndTime()).isSame(moment.unix(testData.tournament2.endAt!).toDate())).to.be.true
-	})
-	it('should get the correct tournament end time 3', () => {
-		expect(moment(tournament3.getEndTime()).isSame(moment.unix(testData.tournament3.endAt!).toDate())).to.be.true
-	})
+    // start time
+    it('should get the correct tournament end time 1', () => {
+        expect(moment(tournament1.getStartTime()).isSame(moment.unix(testData.tournament1.startAt!).toDate())).to.be.true
+    })
+    it('should get the correct tournament end time 2', () => {
+        expect(moment(tournament2.getStartTime()).isSame(moment.unix(testData.tournament2.startAt!).toDate())).to.be.true
+    })
 
-	// end time string
-	it('should get the correct tournament end time 1', () => {
-		expect(tournament1.getEndTimeString()).to.be.equal(String(moment.unix(testData.tournament1.endAt!).toDate()))
-	})
-	it('should get the correct tournament end time 2', () => {
-		expect(tournament2.getEndTimeString()).to.be.equal(String(moment.unix(testData.tournament2.endAt!).toDate()))
-	})
-	it('should get the correct tournament end time 3', () => {
-		expect(tournament3.getEndTimeString()).to.be.equal(String(moment.unix(testData.tournament3.endAt!).toDate()))
-	})
+    // start time string
+    it('should get the correct tournament start time 1', () => {
+        expect(tournament1.getStartTimeString()).to.be.equal(String(moment.unix(testData.tournament1.startAt!).toDate()))
+    })
+    it('should get the correct tournament start time 2', () => {
+        expect(tournament2.getStartTimeString()).to.be.equal(String(moment.unix(testData.tournament2.startAt!).toDate()))
+    })
 
-	// venue
-	it('should get the correct tournament venue 1', () => {
-		expect(tournament1.getVenue()).to.deep.equal(testData.venue1)
-	})
-	it('should get the correct tournament venue 2', () => {
-		expect(tournament2.getVenue()).to.deep.equal(testData.venue2)
-	})
-	it('should get the correct tournament venue 3', () => {
-		expect(tournament3.getVenue()).to.deep.equal(testData.venue3)
-	})
+    // end time
+    it('should get the correct tournament end time 1', () => {
+        expect(moment(tournament1.getEndTime()).isSame(moment.unix(testData.tournament1.endAt!).toDate())).to.be.true
+    })
+    it('should get the correct tournament end time 2', () => {
+        expect(moment(tournament2.getEndTime()).isSame(moment.unix(testData.tournament2.endAt!).toDate())).to.be.true
+    })
 
-	// venue name
-	it('should get the correct tournament venue name 1', () => {
-		expect(tournament1.getVenueName()).to.be.equal(testData.tournament1.venueName)
-		expect(tournament1.getVenueName()).to.be.equal(testData.venue1.getName())
-	})
-	it('should get the correct tournament venue name 2', () => {
-		expect(tournament2.getVenueName()).to.be.equal(testData.tournament2.venueName)
-		expect(tournament2.getVenueName()).to.be.equal(testData.venue2.getName())
-	})
-	it('should get the correct tournament venue name 3', () => {
-		expect(tournament3.getVenueName()).to.be.equal(testData.tournament3.venueName)
-		expect(tournament3.getVenueName()).to.be.equal(testData.venue3.getName())
-	})
+    // end time string
+    it('should get the correct tournament end time 1', () => {
+        expect(tournament1.getEndTimeString()).to.be.equal(String(moment.unix(testData.tournament1.endAt!).toDate()))
+    })
+    it('should get the correct tournament end time 2', () => {
+        expect(tournament2.getEndTimeString()).to.be.equal(String(moment.unix(testData.tournament2.endAt!).toDate()))
+    })
 
-	// venue city
-	it('should get the correct tournament venue city 1', () => {
-		expect(tournament1.getCity()).to.be.equal(testData.tournament1.city)
-		expect(tournament1.getCity()).to.be.equal(testData.venue1.getCity())
-	})
-	it('should get the correct tournament venue city 2', () => {
-		expect(tournament2.getCity()).to.be.equal(testData.tournament2.city)
-		expect(tournament2.getCity()).to.be.equal(testData.venue2.getCity())
-	})
-	it('should get the correct tournament venue city 3', () => {
-		expect(tournament3.getCity()).to.be.equal(testData.tournament3.city)
-		expect(tournament3.getCity()).to.be.equal(testData.venue3.getCity())
-	})
+    // venue
+    it('should get the correct tournament venue 1', () => {
+        expect(tournament1.getVenue()).to.deep.equal(testData.venue1)
+    })
+    it('should get the correct tournament venue 2', () => {
+        expect(tournament2.getVenue()).to.deep.equal(testData.venue2)
+    })
 
-	// address
-	it('should get the correct tournament venue address 1', () => {
-		expect(tournament1.getAddress()).to.be.equal(testData.tournament1.venueAddress)
-		expect(tournament1.getAddress()).to.be.equal(testData.venue1.getAddress())
-	})
-	it('should get the correct tournament venue address 2', () => {
-		expect(tournament2.getAddress()).to.be.equal(testData.tournament2.venueAddress)
-		expect(tournament2.getAddress()).to.be.equal(testData.venue2.getAddress())
-	})
-	it('should get the correct tournament venue address 3', () => {
-		expect(tournament3.getAddress()).to.be.equal(testData.tournament3.venueAddress)
-		expect(tournament3.getAddress()).to.be.equal(testData.venue3.getAddress())
-	})
+    // venue name
+    it('should get the correct tournament venue name 1', () => {
+        expect(tournament1.getVenueName()).to.be.equal(testData.tournament1.venueName)
+        expect(tournament1.getVenueName()).to.be.equal(testData.venue1.getName())
+    })
+    it('should get the correct tournament venue name 2', () => {
+        expect(tournament2.getVenueName()).to.be.equal(testData.tournament2.venueName)
+        expect(tournament2.getVenueName()).to.be.equal(testData.venue2.getName())
+    })
 
-	// state
-	it('should get the correct tournament venue state 1', () => {
-		expect(tournament1.getState()).to.be.equal(testData.tournament1.addrState)
-		expect(tournament1.getState()).to.be.equal(testData.venue1.getState())
-	})
-	it('should get the correct tournament venue state 2', () => {
-		expect(tournament2.getState()).to.be.equal(testData.tournament2.addrState)
-		expect(tournament2.getState()).to.be.equal(testData.venue2.getState())
-	})
-	it('should get the correct tournament venue state 3', () => {
-		expect(tournament3.getState()).to.be.equal(testData.tournament3.addrState)
-		expect(tournament3.getState()).to.be.equal(testData.venue3.getState())
-	})
+    // venue city
+    it('should get the correct tournament venue city 1', () => {
+        expect(tournament1.getCity()).to.be.equal(testData.tournament1.city)
+        expect(tournament1.getCity()).to.be.equal(testData.venue1.getCity())
+    })
+    it('should get the correct tournament venue city 2', () => {
+        expect(tournament2.getCity()).to.be.equal(testData.tournament2.city)
+        expect(tournament2.getCity()).to.be.equal(testData.venue2.getCity())
+    })
 
-	// zip code
-	it('should get the correct tournament venue zip code 1', () => {
-		expect(tournament1.getZipCode()).to.be.equal(testData.tournament1.postalCode)
-		expect(tournament1.getZipCode()).to.be.equal(testData.venue1.getPostalCode())
-	})
-	it('should get the correct tournament venue zip code 2', () => {
-		expect(tournament2.getZipCode()).to.be.equal(testData.tournament2.postalCode)
-		expect(tournament2.getZipCode()).to.be.equal(testData.venue2.getPostalCode())
-	})
-	it('should get the correct tournament venue zip code 3', () => {
-		expect(tournament3.getZipCode()).to.be.equal(testData.tournament3.postalCode)
-		expect(tournament3.getZipCode()).to.be.equal(testData.venue3.getPostalCode())
-	})
+    // address
+    it('should get the correct tournament venue address 1', () => {
+        expect(tournament1.getAddress()).to.be.equal(testData.tournament1.venueAddress)
+        expect(tournament1.getAddress()).to.be.equal(testData.venue1.getAddress())
+    })
+    it('should get the correct tournament venue address 2', () => {
+        expect(tournament2.getAddress()).to.be.equal(testData.tournament2.venueAddress)
+        expect(tournament2.getAddress()).to.be.equal(testData.venue2.getAddress())
+    })
 
-	/*attendee search*/
-	it('should correctly search attendees and find a match', async () => {
-		const searched: IAttendee[] | null = await tournament1.searchAttendees('Tweek')
-		expect(searched).to.not.be.null
-		expect(searched!.length).to.be.greaterThan(0)
-		expect(searched![0].getGamerTag()).to.be.equal('Tweek')
-	})
+    // state
+    it('should get the correct tournament venue state 1', () => {
+        expect(tournament1.getState()).to.be.equal(testData.tournament1.addrState)
+        expect(tournament1.getState()).to.be.equal(testData.venue1.getState())
+    })
+    it('should get the correct tournament venue state 2', () => {
+        expect(tournament2.getState()).to.be.equal(testData.tournament2.addrState)
+        expect(tournament2.getState()).to.be.equal(testData.venue2.getState())
+    })
 
-	it('should correctly search attendees and find no match', async () => {
-		const searched: IAttendee[] | null = await tournament1.searchAttendees('GAwes2')
-		expect(searched).to.be.null
-	})
+    // zip code
+    it('should get the correct tournament venue zip code 1', () => {
+        expect(tournament1.getZipCode()).to.be.equal(testData.tournament1.postalCode)
+        expect(tournament1.getZipCode()).to.be.equal(testData.venue1.getPostalCode())
+    })
+    it('should get the correct tournament venue zip code 2', () => {
+        expect(tournament2.getZipCode()).to.be.equal(testData.tournament2.postalCode)
+        expect(tournament2.getZipCode()).to.be.equal(testData.venue2.getPostalCode())
+    })
 
-	it('should correctly search attendees and find multiple matches', async () => {
-		const searched: IAttendee[] | null = await tournament1.searchAttendees('GA')
-		expect(searched).to.not.be.null
-		expect(searched!.length).to.be.greaterThan(0)
-		expect(searched![0].getGamerTag()).to.be.equal('GatoDelFuego')
-		expect(searched![1].getGamerTag()).to.be.equal('Gackt')
-		expect(searched![2].getGamerTag()).to.be.equal('Game 3')
-	})
+    /*attendee search*/
+    it('should correctly search attendees and find a match', async () => {
+        const searched: IAttendee[] | null = await tournament1.searchAttendees('Tweek')
+        expect(searched).to.not.be.null
+        expect(searched!.length).to.be.greaterThan(0)
+        expect(searched![0].getGamerTag()).to.be.equal('Tweek')
+    })
 
-    // Tests commented due to filtering by sponsors not working properly on start.gg
+    it('should correctly search attendees and find no match', async () => {
+        const searched: IAttendee[] | null = await tournament1.searchAttendees('GAwes2')
+        expect(searched).to.be.null
+    })
+
+    it('should correctly search attendees and find multiple matches', async () => {
+        const searched: IAttendee[] | null = await tournament1.searchAttendees('GA')
+        expect(searched).to.not.be.null
+        expect(searched!.length).to.be.greaterThan(0)
+        expect(searched![0].getGamerTag()).to.be.equal('GatoDelFuego')
+        expect(searched![1].getGamerTag()).to.be.equal('Gackt')
+        expect(searched![2].getGamerTag()).to.be.equal('Game 3')
+    })
+
+//     Tests commented due to filtering by sponsors not working properly on start.gg
 // 	it('should correctly search attendees by prefix and find no match', async () => {
 // 		const searched: IAttendee[] | null = await tournament1.searchAttendeesBySponsorTag('faketaglol')
 // 		expect(searched).to.be.null
@@ -278,53 +248,168 @@ describe('startgg Tournament', function() {
 // 		expect(searched![3].getGamerTag()).to.be.equal('Flow')
 // 	})
 
-	/*
-	// sets
-	it('should return the correct list of Sets in the Tournament 1', async () => {
-		this.timeout(30000)
+    // getEvents
+    it('should return the correct list of Events in the Tournament 1', async () => {
+        const events = await tournament1.getEvents()
 
-		let sets: GGSet[] = await tournament1.getSets()
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(sets)).to.be.false
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet)
-		})
-		expect(sets.length).to.be.equal(84)
-		return true
-	})
-	xit('should return the correct list of Sets in the Tournament 2', async () => {
-		this.timeout(30000)
+        expect(events.length).to.be.equal(7)
+        const hasDuplicates = (a: IEvent[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(events)).to.be.false
+        events.forEach(event => {
+            expect(event).to.be.an.instanceof(Event)
+        })
+        return true
+    }).timeout(30000)
 
-		let sets: GGSet[] = await tournament2.getSets()
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(sets)).to.be.false
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet)
-		})
-		expect(sets.length).to.be.equal(84)
-		return true
-	})
-	xit('should return the correct list of Sets in the Tournament 3', async () => {
-		this.timeout(30000)
+    // getPhases
+    it('should return the correct list of Phases in the Tournament 1', async () => {
+        const phases = await tournament1.getPhases()
 
-		let sets: GGSet[] = await tournament3.getSets()
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(sets)).to.be.false
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet)
-		})
-		expect(sets.length).to.be.equal(84)
-		return true
-	})
+        expect(phases.length).to.be.equal(16)
+        const hasDuplicates = (a: IPhase[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(phases)).to.be.false
+        phases.forEach(phase => {
+            expect(phase).to.be.an.instanceof(Phase)
+        })
+        return true
+    }).timeout(30000)
 
-	// entrants
+    // getPhaseGroups
+    it('should return the correct list of Phases in the Tournament 1', async () => {
+        const pgs = await tournament1.getPhaseGroups()
 
-	// attendees
-	*/
+        expect(pgs.length).to.be.equal(52)
+        const hasDuplicates = (a: IPhaseGroup[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(pgs)).to.be.false
+        pgs.forEach(phase => {
+            expect(phase).to.be.an.instanceof(PhaseGroup)
+        })
+        return true
+    }).timeout(30000)
+
+    // getSets, using small bracket
+    it('should return the correct list of Sets in the Tournament 1', async () => {
+        const sets = await tournament4.getSets()
+
+        expect(sets.length).to.be.equal(30)
+        const hasDuplicates = (a: IGGSet[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(sets)).to.be.false
+        sets.forEach(set => {
+            expect(set).to.be.an.instanceof(GGSet)
+        })
+        return true
+    }).timeout(30000)
+
+    // getEntrants, using small bracket
+    it('should return the correct list of Entrants in the Tournament 1', async () => {
+        const entrants = await tournament4.getEntrants()
+
+        expect(entrants.length).to.be.equal(16)
+        const hasDuplicates = (a: IEntrant[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(entrants)).to.be.false
+        entrants.forEach(entrant => {
+            expect(entrant).to.be.an.instanceof(Entrant)
+        })
+        return true
+    }).timeout(30000)
+
+    // getAttendees
+    it('should return the correct list of Attendees in the Tournament 1', async () => {
+        const attendees = await tournament4.getAttendees()
+
+        expect(attendees.length).to.be.equal(16)
+        const hasDuplicates = (a: IAttendee[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(attendees)).to.be.false
+        attendees.forEach(attendee => {
+            expect(attendee).to.be.an.instanceof(Attendee)
+        })
+        return true
+    }).timeout(30000)
+
+
+    describe('mocked sophisticated functions unit tests', () => {
+        // getEvents()
+        it('getEvents(), should return the correct events for stubbed value for single bracket', async () => {
+            const myTournament = new Tournament(TOURNAMENT_ID_1, 'Port Priority 7', TOURNAMENT_SLUG_1, null, null, null, testData.mockedVenue)
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedGetEventsTournamentEventsQueryResponse)
+
+            const res = await myTournament.getEvents()
+            sinon.assert.calledOnce(niStub1)
+            expect(JSON.stringify(res)).to.be.equal(JSON.stringify(testData.expectedGetEventsReturnValue))
+            niStub1.restore()
+        })
+
+        // getPhases()
+        it('getPhases(), should return the correct phases for stubbed value for single bracket', async () => {
+            const myTournament = new Tournament(TOURNAMENT_ID_1, 'Port Priority 7', TOURNAMENT_SLUG_1, null, null, null, testData.mockedVenue)
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedGetPhasesTournamentEventsQueryResponse)
+
+            const res = await myTournament.getPhases()
+            sinon.assert.calledOnce(niStub1)
+            expect(await res).to.deep.equal(testData.expectedGetPhasesReturnValue)
+            niStub1.restore()
+        })
+
+        // getPhaseGroups()
+        it('getPhaseGroups(), should return the correct phase groups for stubbed value for single bracket', async () => {
+            const myTournament = new Tournament(TOURNAMENT_ID_1, 'Port Priority 7', TOURNAMENT_SLUG_1, null, null, null, testData.mockedVenue)
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedGetPhaseGroupsTournamentEventsQueryResponse)
+
+            const res = await myTournament.getPhaseGroups()
+            sinon.assert.calledOnce(niStub1)
+            expect(res).to.deep.equal(testData.expectedGetPhaseGroupsReturnValue)
+            niStub1.restore()
+        })
+
+        // getSets(), checking for size due to long object to keep as testData
+        it('getSets(), should return the correct sets for stubbed value for single bracket', async () => {
+            const myTournament = new Tournament(TOURNAMENT_ID_1, 'Port Priority 7', TOURNAMENT_SLUG_1, null, null, null, testData.mockedVenue)
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedGetPhaseGroupsTournamentEventsQueryResponse)
+            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedGetSetsTournamentEventsQueryResponse)
+
+            const res = await myTournament.getSets()
+            sinon.assert.calledOnce(niStub1)
+            sinon.assert.calledOnce(niStub2)
+            expect(res.length).to.deep.equal(testData.expectedGetSetsArraySizeReturnValue)
+            niStub1.restore()
+            niStub2.restore()
+        })
+
+        // getEntrants()
+        it('getEntrants(), should return the correct entrants for stubbed value for single bracket', async () => {
+            const myTournament = new Tournament(TOURNAMENT_ID_1, 'Port Priority 7', TOURNAMENT_SLUG_1, null, null, null, testData.mockedVenue)
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedGetPhaseGroupsTournamentEventsQueryResponse)
+            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedGetEntrantsTournamentEventsQueryResponse)
+
+            const res = await myTournament.getEntrants()
+            sinon.assert.calledOnce(niStub1)
+            sinon.assert.calledOnce(niStub2)
+            expect(res).to.deep.equal(testData.expectedGetEntrantsReturnValue)
+            niStub1.restore()
+            niStub2.restore()
+        })
+
+        // getAttendees()
+        it('getAttendees(), should return the correct attendees for stubbed value for single bracket', async () => {
+            const myTournament = new Tournament(TOURNAMENT_ID_1, 'Port Priority 7', TOURNAMENT_SLUG_1, null, null, null, testData.mockedVenue)
+            const niStub1 = sinon.mock(NI).expects('paginatedQuery').once().returns(testData.mockedGetAttendeesTournamentEventsPaginatedQueryResponse)
+
+            const res = await myTournament.getAttendees()
+            sinon.assert.calledOnce(niStub1)
+            expect(JSON.stringify(res)).to.deep.equal(JSON.stringify(testData.expectedGetAttendeesReturnValue))
+            niStub1.restore()
+        })
+    })
 })
