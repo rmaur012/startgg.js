@@ -25,8 +25,8 @@ import {GGSet} from '../lib/models/GGSet'
 import {Phase} from '../lib/models/Phase'
 import {PhaseGroup} from '../lib/models/PhaseGroup'
 import Initializer from '../lib/util/Initializer'
-import * as testData from './data/event.testData'
 import NI from '../lib/util/NetworkInterface'
+import * as testData from './data/event.testData'
 
 let event1: IEvent, event2: IEvent
 
@@ -237,88 +237,88 @@ describe('startgg Event', function() {
         return true
     })
 
-    describe('mocked sophisticated functions unit tests', function() {
+    describe('mocked sophisticated functions unit tests', () => {
         // getPhases()
         it('getPhases(), should return the correct mapping for stubbed value for single bracket', async () => {
-            const myEvent = new Event(822160, 'Get Phases Single', 'gps', null, null, null, null, null, null, null, null, null);
-            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedGetPhasesQueryResponseOfSingleBracket);
+            const myEvent = new Event(822160, 'Get Phases Single', 'gps', null, null, null, null, null, null, null, null, null)
+            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedGetPhasesQueryResponseOfSingleBracket)
 
-            const res = myEvent.getPhases();
-            sinon.assert.calledOnce(niStub);
+            const res = myEvent.getPhases()
+            sinon.assert.calledOnce(niStub)
             expect(JSON.stringify(await res)).to.be.equal(JSON.stringify(testData.expectedGetPhasesReturnValueOfSingleBracket))
-            niStub.restore();
+            niStub.restore()
         })
 
         it('getPhases(), should return the correct mapping for stubbed value for single bracket', async () => {
-            const myEvent = new Event(23597, 'Get Phases Extensive', 'gps', null, null, null, null, null, null, null, null, null);
-            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedGetPhasesResultOfExtensiveBracket);
+            const myEvent = new Event(23597, 'Get Phases Extensive', 'gps', null, null, null, null, null, null, null, null, null)
+            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedGetPhasesResultOfExtensiveBracket)
 
-            const res = myEvent.getPhases();
-            sinon.assert.calledOnce(niStub);
+            const res = myEvent.getPhases()
+            sinon.assert.calledOnce(niStub)
             expect(JSON.stringify(await res)).to.be.equal(JSON.stringify(testData.expectedGetPhasesReturnValueOfExtensiveBracket))
-            niStub.restore();
+            niStub.restore()
         })
 
-        //getPhaseGroups
+        // getPhaseGroups
         it('getPhaseGroups(), should return the correct mapping for stubbed value for single bracket', async () => {
-            const myEvent = new Event(822160, 'Get Phase Groups Single', 'gps', null, null, null, null, null, null, null, null, null);
-            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedGetPhaseGroupsQueryResponseOfSingleBracket);
+            const myEvent = new Event(822160, 'Get Phase Groups Single', 'gps', null, null, null, null, null, null, null, null, null)
+            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedGetPhaseGroupsQueryResponseOfSingleBracket)
 
-            const res = myEvent.getPhaseGroups();
-            sinon.assert.calledOnce(niStub);
+            const res = myEvent.getPhaseGroups()
+            sinon.assert.calledOnce(niStub)
             expect(JSON.stringify(await res)).to.be.equal(JSON.stringify(testData.expectedGetPhaseGroupsReturnValueOfSingleBracket))
-            niStub.restore();
+            niStub.restore()
         })
 
         it('getPhaseGroups(), should return the correct mapping for stubbed value for single bracket', async () => {
-            const myEvent = new Event(23597, 'Get Phase Groups Extensive', 'gps', null, null, null, null, null, null, null, null, null);
-            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedGetPhaseGroupsResultOfExtensiveBracket);
+            const myEvent = new Event(23597, 'Get Phase Groups Extensive', 'gps', null, null, null, null, null, null, null, null, null)
+            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedGetPhaseGroupsResultOfExtensiveBracket)
 
-            const res = myEvent.getPhaseGroups();
-            sinon.assert.calledOnce(niStub);
+            const res = myEvent.getPhaseGroups()
+            sinon.assert.calledOnce(niStub)
             expect(JSON.stringify(await res)).to.be.equal(JSON.stringify(testData.expectedGetPhaseGroupsReturnValueOfExtensiveBracket))
-            niStub.restore();
+            niStub.restore()
         })
 
-        //getStandings, but not implemented right now
+        // getStandings, but not implemented right now
 
-        //getEntrants
+        // getEntrants
         it('getEntrants(), should return the correct mapping for stubbed value for single bracket', async () => {
-            const myEvent = new Event(23597, 'Get Entrants', 'gps', null, null, null, null, null, null, null, null, null);
-            const eventStub = sinon.mock(myEvent).expects('getPhaseGroups').once().returns(testData.mockedGetPhaseGroupsFunction);
-            const niStub = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedGetEntrantsQueryResponse);
+            const myEvent = new Event(23597, 'Get Entrants', 'gps', null, null, null, null, null, null, null, null, null)
+            const eventStub = sinon.mock(myEvent).expects('getPhaseGroups').once().returns(testData.mockedGetPhaseGroupsFunction)
+            const niStub = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedGetEntrantsQueryResponse)
 
-            const res = myEvent.getEntrants();
-            sinon.assert.calledOnce(eventStub);
+            const res = myEvent.getEntrants()
+            sinon.assert.calledOnce(eventStub)
             expect(JSON.stringify(await res)).to.be.equal(JSON.stringify(testData.expectedGetEntrantsReturnValue))
-            eventStub.restore();
-            niStub.restore();
+            eventStub.restore()
+            niStub.restore()
         })
 
-        //getAttendees
+        // getAttendees
         it('getAttendees(), should return the correct mapping for stubbed value for single bracket', async () => {
-            const myEvent = new Event(23597, 'Get Attendees', 'gps', null, null, null, null, null, null, null, null, null);
-            const eventStub = sinon.mock(myEvent).expects('getPhaseGroups').once().returns(testData.mockedGetPhaseGroupsFunctionForGetAttendees);
-            const niStub = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedGetAttendeesQueryResponseForGetAttendees);
+            const myEvent = new Event(23597, 'Get Attendees', 'gps', null, null, null, null, null, null, null, null, null)
+            const eventStub = sinon.mock(myEvent).expects('getPhaseGroups').once().returns(testData.mockedGetPhaseGroupsFunctionForGetAttendees)
+            const niStub = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedGetAttendeesQueryResponseForGetAttendees)
 
-            const res = myEvent.getAttendees();
-            sinon.assert.calledOnce(eventStub);
+            const res = myEvent.getAttendees()
+            sinon.assert.calledOnce(eventStub)
             expect(JSON.stringify(await res)).to.be.equal(JSON.stringify(testData.expectedGetAttendeesReturnValueForGetAttendees))
-            eventStub.restore();
-            niStub.restore();
+            eventStub.restore()
+            niStub.restore()
         })
 
-        //getSets
+        // getSets
         it('getSets(), should return the correct set counts for stubbed value for single bracket', async () => {
-            const myEvent = new Event(23597, 'Get Sets', 'gps', null, null, null, null, null, null, null, null, null);
-            const eventStub = sinon.mock(myEvent).expects('getPhaseGroups').once().returns(testData.mockedGetPhaseGroupsFunctionForGetSets);
-            const niStub = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedGetAttendeesQueryResponseForGetSets);
+            const myEvent = new Event(23597, 'Get Sets', 'gps', null, null, null, null, null, null, null, null, null)
+            const eventStub = sinon.mock(myEvent).expects('getPhaseGroups').once().returns(testData.mockedGetPhaseGroupsFunctionForGetSets)
+            const niStub = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedGetAttendeesQueryResponseForGetSets)
 
-            const res = myEvent.getSets();
-            sinon.assert.calledOnce(eventStub);
+            const res = myEvent.getSets()
+            sinon.assert.calledOnce(eventStub)
             expect(JSON.parse(JSON.stringify(await res)).length).to.be.equal(testData.expectedGetSetReturnValueArrayLengthForGetSets)
-            eventStub.restore();
-            niStub.restore();
+            eventStub.restore()
+            niStub.restore()
         })
     })
 })

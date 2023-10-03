@@ -316,7 +316,7 @@ export class Tournament implements ITournament{
         options: IAttendeeOptions = Attendee.getDefaultAttendeeOptions()
     ): Promise<IAttendee[]> {
 
-        //log.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name)
+        // log.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name)
         const data: ITournamentAttendeeData[] = await NI.paginatedQuery(
             `Tournament Attendee [${this.id} :: ${this.name}]`,
             queries.tournamentAttendees, {id: this.id},

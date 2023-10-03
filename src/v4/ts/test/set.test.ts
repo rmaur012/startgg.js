@@ -22,10 +22,10 @@ import {Entrant} from '../lib/models/Entrant'
 import {Game} from '../lib/models/Game'
 import {GGSet} from '../lib/models/GGSet'
 import Initializer from '../lib/util/Initializer'
+import NI from '../lib/util/NetworkInterface'
+import * as testDataEvents from './data/event.testData'
 import * as gameData from './data/games.testData'
 import * as testData from './data/sets.testData'
-import * as testDataEvents from './data/event.testData'
-import NI from '../lib/util/NetworkInterface'
 
 let set1: IGGSet, set2: IGGSet
 const SET_ID_1 = +'54170233'
@@ -170,162 +170,162 @@ describe('startgg Set (has still pending)', function() {
     })
 
     // getting winner id
-    describe('getWinnerId() unit tests', function() {
+    describe('getWinnerId() unit tests', () => {
         it('should give the correct Winner ID 1', () => {
             expect(set1.getWinnerId()).to.deep.equal(testData.set1.winnerId)
         })
 
         it('should return player 1 when winner id is player 1`s entrant id', async () => {
-            let currSet = testData.set1GGSet
+            const currSet = testData.set1GGSet
             currSet.winnerId = currSet.player1.entrantId
 
-            const res = currSet.getWinnerId();
+            const res = currSet.getWinnerId()
             expect(res).to.deep.equal(currSet.player1.entrantId)
         })
 
         it('should return player 2 when winner id is null', async () => {
-            let currSet = testData.set1GGSet
-            currSet.winnerId = null;
+            const currSet = testData.set1GGSet
+            currSet.winnerId = null
 
-            const res = currSet.getWinnerId();
+            const res = currSet.getWinnerId()
             expect(res).to.deep.equal(null)
         })
     })
 
     // getting loser id
-    describe('getLoserId() unit tests', function() {
+    describe('getLoserId() unit tests', () => {
         it('should give the correct Loser ID 1', () => {
             expect(set1.getLoserId()).to.deep.equal(testData.p2.entrantId)
         })
 
         it('should return player 1 when winner id is player 2`s entrant id', async () => {
-            let currSet = testData.set1GGSet;
-            currSet.winnerId = currSet.player2.entrantId;
+            const currSet = testData.set1GGSet
+            currSet.winnerId = currSet.player2.entrantId
 
-            const res = currSet.getLoserId();
+            const res = currSet.getLoserId()
             expect(res).to.deep.equal(currSet.player1.entrantId)
         })
 
         it('should return player 2 when winner id is player 1`s entrant id', async () => {
-            let currSet = testData.set1GGSet
-            currSet.winnerId = currSet.player1.entrantId;
+            const currSet = testData.set1GGSet
+            currSet.winnerId = currSet.player1.entrantId
 
-            const res = currSet.getLoserId();
+            const res = currSet.getLoserId()
             expect(res).to.deep.equal(currSet.player2.entrantId)
         })
 
         it('should return null when winner id is neither of the two player`s entrant id', async () => {
-            let currSet = testData.set1GGSet
-            currSet.winnerId = 101;
+            const currSet = testData.set1GGSet
+            currSet.winnerId = 101
 
-            const res = currSet.getLoserId();
+            const res = currSet.getLoserId()
             expect(res).to.deep.equal(null)
         })
     })
 
     // getting winner
-    describe('getWinner() unit tests', function() {
+    describe('getWinner() unit tests', () => {
         it('should give the correct Winner 1', () => {
             expect(set1.getWinner()).to.deep.equal(testData.p1)
         })
 
         it('should return player 1 when winner id is player 1`s entrant id', async () => {
-            let currSet = testData.set1GGSet
+            const currSet = testData.set1GGSet
             currSet.winnerId = currSet.player1.entrantId
 
-            const res = currSet.getWinner();
+            const res = currSet.getWinner()
             expect(res).to.deep.equal(currSet.player1)
         })
 
         it('should return player 2 when winner id is player 2`s entrant id', async () => {
-            let currSet = testData.set1GGSet
+            const currSet = testData.set1GGSet
             currSet.winnerId = currSet.player2.entrantId
 
-            const res = currSet.getWinner();
+            const res = currSet.getWinner()
             expect(res).to.deep.equal(currSet.player2)
         })
 
         it('should return error with specific error message when loser id doesn`t match either player`s entrant ids', async () => {
-            let currSet = testData.set1GGSet
-            currSet.winnerId = 101;
-            let res = null;
-            const errorMsg = `Winner ID ${currSet.winnerId} does not match either player ID: [${[currSet.player1.entrantId, currSet.player2.entrantId].join(',')}]`;
+            const currSet = testData.set1GGSet
+            currSet.winnerId = 101
+            let res = null
+            const errorMsg = `Winner ID ${currSet.winnerId} does not match either player ID: [${[currSet.player1.entrantId, currSet.player2.entrantId].join(',')}]`
 
             try  {
-                currSet.getWinner();
+                currSet.getWinner()
             }
             catch(err) {
                 res = err.message
             }
-            expect(res).to.deep.equal(errorMsg);
+            expect(res).to.deep.equal(errorMsg)
         })
 
         it('should return error with specific error message when either the winner id or either player`s entrant ids are missing', async () => {
-            let currSet = testData.set1GGSet
-            currSet.winnerId = null;
-            let res = null;
-            const errorMsg = `Set (${currSet.id}) must be complete to get the Winning Player`;
+            const currSet = testData.set1GGSet
+            currSet.winnerId = null
+            let res = null
+            const errorMsg = `Set (${currSet.id}) must be complete to get the Winning Player`
 
             try  {
-                currSet.getWinner();
+                currSet.getWinner()
             }
             catch(err) {
                 res = err.message
             }
-            expect(res).to.deep.equal(errorMsg);
+            expect(res).to.deep.equal(errorMsg)
         })
     })
 
     // getting loser
-    describe('getLoser() unit tests', function() {
+    describe('getLoser() unit tests', () => {
         it('should give the correct Loser 1 by calls', () => {
             expect(set1.getLoser()).to.deep.equal(testData.p2)
         })
 
         it('should return player 2 when winner id is player 1`s entrant id', async () => {
-            let currSet = testData.set1GGSet
+            const currSet = testData.set1GGSet
             currSet.winnerId = currSet.player1.entrantId
 
-            const res = currSet.getLoser();
+            const res = currSet.getLoser()
             expect(res).to.deep.equal(currSet.player2)
         })
 
         it('should return player 1 when winner id is player 2`s entrant id', async () => {
-            let currSet = testData.set1GGSet
+            const currSet = testData.set1GGSet
             currSet.winnerId = currSet.player2.entrantId
 
-            const res = currSet.getLoser();
+            const res = currSet.getLoser()
             expect(res).to.deep.equal(currSet.player1)
         })
 
         it('should return error with specific error message when loser id doesn`t match either player`s entrant ids', async () => {
-            let currSet = testData.set1GGSet
-            currSet.winnerId = 101;
-            let res = null;
-            const errorMsg = `Loser ID does not match either player ID: [${[currSet.player1.entrantId, currSet.player2.entrantId].join(',')}]`;
+            const currSet = testData.set1GGSet
+            currSet.winnerId = 101
+            let res = null
+            const errorMsg = `Loser ID does not match either player ID: [${[currSet.player1.entrantId, currSet.player2.entrantId].join(',')}]`
 
             try  {
-                currSet.getLoser();
+                currSet.getLoser()
             }
             catch(err) {
                 res = err.message
             }
-            expect(res).to.deep.equal(errorMsg);
+            expect(res).to.deep.equal(errorMsg)
         })
 
         it('should return error with specific error message when either the winner id or either player`s entrant ids are missing', async () => {
-            let currSet = testData.set1GGSet
-            currSet.winnerId = null;
-            let res = null;
-            const errorMsg = `Set (${currSet.id}) must be complete to get the Losing Player`;
+            const currSet = testData.set1GGSet
+            currSet.winnerId = null
+            let res = null
+            const errorMsg = `Set (${currSet.id}) must be complete to get the Losing Player`
 
             try  {
-                currSet.getLoser();
+                currSet.getLoser()
             }
             catch(err) {
                 res = err.message
             }
-            expect(res).to.deep.equal(errorMsg);
+            expect(res).to.deep.equal(errorMsg)
         })
     })
 
@@ -338,126 +338,126 @@ describe('startgg Set (has still pending)', function() {
     })
 
     // Winner score
-    describe('getWinnerScore() unit tests', function() {
+    describe('getWinnerScore() unit tests', () => {
         it('should give the correct Winner score 1 by calls', () => {
             expect(set1.getWinnerScore()).to.be.equal(3)
         })
 
         it('should return score 1 when score 1 is winner', async () => {
-            let currSet = testData.set1GGSet
-            currSet.score1 = 3;
-            currSet.score2 = 0;
+            const currSet = testData.set1GGSet
+            currSet.score1 = 3
+            currSet.score2 = 0
 
-            const res = currSet.getWinnerScore();
+            const res = currSet.getWinnerScore()
             expect(res).to.be.equal(currSet.score1)
         })
 
         it('should return score 2 when score 2 is winners', async () => {
-            let currSet = testData.set1GGSet
-            currSet.score1 = 0;
-            currSet.score2 = 3;
+            const currSet = testData.set1GGSet
+            currSet.score1 = 0
+            currSet.score2 = 3
 
-            const res = currSet.getWinnerScore();
+            const res = currSet.getWinnerScore()
             expect(res).to.be.equal(currSet.score2)
         })
 
         it('should return error with error message when set is not completed', async () => {
-            let currSet = testData.set1GGSet
-            currSet.completedAt = null;
-            let res = null;
-            const errorMsg = "Cannot get winner score of incomplete set";
+            const currSet = testData.set1GGSet
+            currSet.completedAt = null
+            let res = null
+            const errorMsg = 'Cannot get winner score of incomplete set'
 
             try  {
-                currSet.getWinnerScore();
+                currSet.getWinnerScore()
             }
             catch(err) {
                 res = err.message
             }
-            expect(res).to.be.equal(errorMsg);
+            expect(res).to.be.equal(errorMsg)
         })
 
         it('should return score 2 when score 1 is null and when score 2 is not null', async () => {
-            let currSet = testData.set1GGSet;
-            //score1 is null
-            currSet.score1 = null;
-            currSet.score2 = 2;
-            currSet.completedAt = 10000;
+            const currSet = testData.set1GGSet
+            // score1 is null
+            currSet.score1 = null
+            currSet.score2 = 2
+            currSet.completedAt = 10000
 
-            let res = currSet.getWinnerScore();
-            expect(res).to.be.equal(currSet.score2);
+            const res = currSet.getWinnerScore()
+            expect(res).to.be.equal(currSet.score2)
         })
 
         it('should return score 1 when score 1 is not null and when score 2 is null', async () => {
-            let currSet = testData.set1GGSet;
-            //score1 is null
-            currSet.score1 = 2;
-            currSet.score2 = null;
-            currSet.completedAt = 10000;
+            const currSet = testData.set1GGSet
+            // score1 is null
+            currSet.score1 = 2
+            currSet.score2 = null
+            currSet.completedAt = 10000
 
-            let res = currSet.getWinnerScore();
-            expect(res).to.be.equal(currSet.score1);
+            const res = currSet.getWinnerScore()
+            expect(res).to.be.equal(currSet.score1)
         })
     })
 
     // Loser score
-    describe('getLoserScore() unit tests', function() {
+    describe('getLoserScore() unit tests', () => {
         it('should give the correct Loser score 1 by calls', () => {
             expect(set1.getLoserScore()).to.be.equal(2)
         })
 
         it('should return score 1 when score 1 is loser', async () => {
-            let currSet = testData.set1GGSet
-            currSet.score1 = 0;
-            currSet.score2 = 3;
+            const currSet = testData.set1GGSet
+            currSet.score1 = 0
+            currSet.score2 = 3
 
-            const res = currSet.getLoserScore();
+            const res = currSet.getLoserScore()
             expect(res).to.be.equal(currSet.score1)
         })
 
         it('should return score 2 when score 2 is loser', async () => {
-            let currSet = testData.set1GGSet
-            currSet.score1 = 3;
-            currSet.score2 = 0;
+            const currSet = testData.set1GGSet
+            currSet.score1 = 3
+            currSet.score2 = 0
 
-            const res = currSet.getLoserScore();
+            const res = currSet.getLoserScore()
             expect(currSet.getLoserScore()).to.be.equal(currSet.score2)
         })
 
         it('should return error with error message when set is not completed', async () => {
-            let currSet = testData.set1GGSet
-            currSet.completedAt = null;
-            let res = null;
-            const errorMsg = "Cannot get loser score of incomplete set";
+            const currSet = testData.set1GGSet
+            currSet.completedAt = null
+            let res = null
+            const errorMsg = 'Cannot get loser score of incomplete set'
 
             try  {
-                currSet.getLoserScore();
+                currSet.getLoserScore()
             }
             catch(err) {
                 res = err.message
             }
-            expect(res).to.be.equal(errorMsg);
+            expect(res).to.be.equal(errorMsg)
         })
 
         it('should return 0 when score 1 is null', async () => {
-            let currSet = testData.set1GGSet;
-            //score1 is null
-            currSet.score1 = null;
-            currSet.score2 = 0;
-            currSet.completedAt = 10000;
+            const currSet = testData.set1GGSet
+            // score1 is null
+            currSet.score1 = null
+            currSet.score2 = 0
+            currSet.completedAt = 10000
 
-            let res = currSet.getLoserScore();
-            expect(res).to.be.equal(0);
+            const res = currSet.getLoserScore()
+            expect(res).to.be.equal(0)
         })
 
         it('should return 0 when score 2 is null', async () => {
-            let currSet = testData.set1GGSet;
-            //score2 is null
-            currSet.score1 = 0;
-            currSet.score2 = null;
-            currSet.completedAt = 10000;
+            const currSet = testData.set1GGSet
+            // score2 is null
+            currSet.score1 = 0
+            currSet.score2 = null
+            currSet.completedAt = 10000
 
-            let res = currSet.getLoserScore();
-            expect(res).to.be.equal(0);
+            const res = currSet.getLoserScore()
+            expect(res).to.be.equal(0)
         })
     })
 
@@ -489,17 +489,17 @@ describe('startgg Set (has still pending)', function() {
         await testGetAttendees(set2)
     })
 
-    describe('mocked sophisticated functions unit tests', function() {
+    describe('mocked sophisticated functions unit tests', () => {
         // getGames()
         it('getGames(), should return the correct mapping for stubbed value for single bracket', async () => {
-            const mySet = testData.set1GGSet;
-            const niStub = sinon.mock(NI).expects('query').once().returns(gameData.games1Full);
+            const mySet = testData.set1GGSet
+            const niStub = sinon.mock(NI).expects('query').once().returns(gameData.games1Full)
 
-            const res = mySet.getGames();
-            sinon.assert.calledOnce(niStub);
-            const expected = gameData.games1.map(data => Game.parse(data));
+            const res = mySet.getGames()
+            sinon.assert.calledOnce(niStub)
+            const expected = gameData.games1.map(data => Game.parse(data))
             expect(await res).to.deep.equal(expected)
-            niStub.restore();
+            niStub.restore()
         })
 
         // getAttendees(), TODO: Implement function and fix the attendees query to match site schema

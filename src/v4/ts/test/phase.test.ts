@@ -3,10 +3,10 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
-import '../lib/util/ErrorHandler'
-import * as log from '../lib/util/Logger'
 import _ from 'lodash'
 import moment from 'moment'
+import '../lib/util/ErrorHandler'
+import * as log from '../lib/util/Logger'
 
 import chai from 'chai'
 import cap from 'chai-as-promised'
@@ -23,8 +23,8 @@ import {GGSet} from '../lib/models/GGSet'
 import {Phase} from '../lib/models/Phase'
 import {PhaseGroup} from '../lib/models/PhaseGroup'
 import Initializer from '../lib/util/Initializer'
-import * as testData from './data/phase.testData'
 import NI from '../lib/util/NetworkInterface'
+import * as testData from './data/phase.testData'
 
 const LOG_LEVEL = log.levels.DEBUG
 
@@ -52,7 +52,7 @@ const PHASE_3_ATTENDEE_COUNT = 8
 let phase1: IPhase
 let phase2: IPhase
 let phase3: IPhase
-let concurrency = 4
+const concurrency = 4
 
 describe('startgg Phase', function() {
     this.timeout(10000)
@@ -127,17 +127,17 @@ describe('startgg Phase', function() {
         return true
     })
 
-	it('should correctly get all sets 2', async function() {
-		this.timeout(120000)
-		await testSets(phase2, PHASE_2_SET_COUNT)
-		return true
-	})
+    it('should correctly get all sets 2', async function() {
+        this.timeout(120000)
+        await testSets(phase2, PHASE_2_SET_COUNT)
+        return true
+    })
 
-	it('should correctly get all sets 3', async function() {
-		this.timeout(60000)
-		await testSets(phase3, PHASE_3_SET_COUNT)
-		return true
-	})
+    it('should correctly get all sets 3', async function() {
+        this.timeout(60000)
+        await testSets(phase3, PHASE_3_SET_COUNT)
+        return true
+    })
 
     // entrants
     it('should correctly get all entrants 1', async function() {
@@ -191,76 +191,76 @@ describe('startgg Phase', function() {
     })
 
 
-	it('should correctly get all phase groups', async () => {
-		this.timeout(45000)
+    it('should correctly get all phase groups', async () => {
+        this.timeout(45000)
 
-		let phaseGroups1 = await phase1.getPhaseGroups()
+        const phaseGroups1 = await phase1.getPhaseGroups()
 
-		expect(phaseGroups1.length).to.be.equal(1)
+        expect(phaseGroups1.length).to.be.equal(1)
 
-		var hasDuplicates = function(a: Array<IPhaseGroup>) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(phaseGroups1)).to.be.false
+        const hasDuplicates = (a: IPhaseGroup[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(phaseGroups1)).to.be.false
 
-		phaseGroups1.forEach(set => {
-			expect(set).to.be.an.instanceof(PhaseGroup)
-		})
+        phaseGroups1.forEach(set => {
+            expect(set).to.be.an.instanceof(PhaseGroup)
+        })
 
-		return true
-	})
+        return true
+    })
 
-	it('should correctly get all phase groups 2', async () => {
-		this.timeout(45000)
+    it('should correctly get all phase groups 2', async () => {
+        this.timeout(45000)
 
-		let phaseGroups2 = await phase2.getPhaseGroups()
+        const phaseGroups2 = await phase2.getPhaseGroups()
 
-		expect(phaseGroups2.length).to.be.equal(2)
+        expect(phaseGroups2.length).to.be.equal(2)
 
-		var hasDuplicates = function(a: Array<IPhaseGroup>) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(phaseGroups2)).to.be.false
+        const hasDuplicates = (a: IPhaseGroup[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(phaseGroups2)).to.be.false
 
-		phaseGroups2.forEach(set => {
-			expect(set).to.be.an.instanceof(PhaseGroup)
-		})
+        phaseGroups2.forEach(set => {
+            expect(set).to.be.an.instanceof(PhaseGroup)
+        })
 
-		return true
-	})
+        return true
+    })
 
-	it('should correctly get all phase groups 3', async () => {
-		this.timeout(45000)
+    it('should correctly get all phase groups 3', async () => {
+        this.timeout(45000)
 
-		let phaseGroups3 = await phase3.getPhaseGroups()
+        const phaseGroups3 = await phase3.getPhaseGroups()
 
-		expect(phaseGroups3.length).to.be.equal(1)
+        expect(phaseGroups3.length).to.be.equal(1)
 
-		var hasDuplicates = function(a: Array<IPhaseGroup>) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(phaseGroups3)).to.be.false
+        const hasDuplicates = (a: IPhaseGroup[]) => {
+            return _.uniq(a).length !== a.length
+        }
+        expect(hasDuplicates(phaseGroups3)).to.be.false
 
-		phaseGroups3.forEach(set => {
-			expect(set).to.be.an.instanceof(PhaseGroup)
-		})
+        phaseGroups3.forEach(set => {
+            expect(set).to.be.an.instanceof(PhaseGroup)
+        })
 
-		return true
-	})
+        return true
+    })
 
-	it('should correctly get all sets for a phase', async () => {
-		this.timeout(30000)
+    it('should correctly get all sets for a phase', async () => {
+        this.timeout(30000)
 
-		let sets1 = await phase1.getSets()
+        const sets1 = await phase1.getSets()
 
-		expect(sets1.length).to.be.equal(61)
+        expect(sets1.length).to.be.equal(61)
 
-		sets1.forEach(set => {
-			expect(set).to.be.instanceof(GGSet)
-		})
+        sets1.forEach(set => {
+            expect(set).to.be.instanceof(GGSet)
+        })
 
-		return true
-	})
+        return true
+    })
 
 // Easy to reach rate limit here
 // 	xit('should correctly get all sets for a phase 2', async () => {
@@ -275,17 +275,17 @@ describe('startgg Phase', function() {
 // 		return true
 // 	}).timeout(45000)
 
-	it('should correctly get all sets for a phase 3', async () => {
-		let sets3 = await phase3.getSets()
+    it('should correctly get all sets for a phase 3', async () => {
+        const sets3 = await phase3.getSets()
 
-		expect(sets3.length).to.be.equal(11)
+        expect(sets3.length).to.be.equal(11)
 
-		sets3.forEach(set => {
-			expect(set).to.be.instanceof(GGSet)
-		})
+        sets3.forEach(set => {
+            expect(set).to.be.instanceof(GGSet)
+        })
 
-		return true
-	}).timeout(45000)
+        return true
+    }).timeout(45000)
 
 //     // getPlayers() isnt a real function?
 // 	it('should correctly get all players for a phase', async () => {
@@ -341,46 +341,46 @@ describe('startgg Phase', function() {
 // 		return true
 // 	})
 
-	describe('mocked sophisticated functions unit tests', function() {
-	    // getPhaseGroups()
-	    // getSeeds()
+    describe('mocked sophisticated functions unit tests', () => {
+        // getPhaseGroups()
+        // getSeeds()
         // getEntrants()
         it('getEntrants(), should return the correct entrants for stubbed value for single bracket', async () => {
-            const myPhase = new Phase(ID3, EVENT_ID_3, 'Top 8', 8, 1);
-            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedTop8PhasePaginatedDataQueryResponse);
-            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedTop8GetEntrantsClusterQueryResponse);
+            const myPhase = new Phase(ID3, EVENT_ID_3, 'Top 8', 8, 1)
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedTop8PhasePaginatedDataQueryResponse)
+            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedTop8GetEntrantsClusterQueryResponse)
 
-            const res = myPhase.getEntrants();
-            sinon.assert.calledOnce(niStub1);
+            const res = myPhase.getEntrants()
+            sinon.assert.calledOnce(niStub1)
             expect(await res).to.deep.equal(testData.expectedTop8PhaseGetEntrantsReturnValue)
-            niStub1.restore();
-            niStub2.restore();
+            niStub1.restore()
+            niStub2.restore()
         })
 
         // getAttendees()
         it('getAttendees(), should return the correct attendees for stubbed value for single bracket', async () => {
-            const myPhase = new Phase(ID3, EVENT_ID_3, 'Top 8', 8, 1);
-            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedTop8PhasePaginatedDataQueryResponse);
-            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedTop8GetAttendeesClusterQueryResponse);
+            const myPhase = new Phase(ID3, EVENT_ID_3, 'Top 8', 8, 1)
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedTop8PhasePaginatedDataQueryResponse)
+            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedTop8GetAttendeesClusterQueryResponse)
 
-            const res = myPhase.getAttendees();
-            sinon.assert.calledOnce(niStub1);
+            const res = myPhase.getAttendees()
+            sinon.assert.calledOnce(niStub1)
             expect(await res).to.deep.equal(testData.expectedTop8PhaseGetAttendeesReturnValue)
-            niStub1.restore();
-            niStub2.restore();
+            niStub1.restore()
+            niStub2.restore()
         })
 
         // getSets
         it('getSets(), should return the correct sets for stubbed value for single bracket', async () => {
-            const myPhase = new Phase(ID3, EVENT_ID_3, 'Top 8', 8, 1);
-            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedTop8PhasePaginatedDataQueryResponse);
-            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedTop8GetSetsClusterQueryResponse);
+            const myPhase = new Phase(ID3, EVENT_ID_3, 'Top 8', 8, 1)
+            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedTop8PhasePaginatedDataQueryResponse)
+            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedTop8GetSetsClusterQueryResponse)
 
-            const res = myPhase.getSets();
-            sinon.assert.calledOnce(niStub1);
+            const res = myPhase.getSets()
+            sinon.assert.calledOnce(niStub1)
             expect(await res).to.deep.equal(testData.expectedTop8PhaseGetSetsReturnValue)
-            niStub1.restore();
-            niStub2.restore();
+            niStub1.restore()
+            niStub2.restore()
         })
     })
 })

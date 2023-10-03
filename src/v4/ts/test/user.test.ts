@@ -6,11 +6,11 @@ config({path: ROOT})
 import '../lib/util/ErrorHandler'
 
 import {expect} from 'chai'
+import sinon from 'sinon'
 import {User} from '../lib/models/User'
 import Initializer from '../lib/util/Initializer'
-import * as testData from './data/user.testData'
-import sinon from 'sinon'
 import NI from '../lib/util/NetworkInterface'
+import * as testData from './data/user.testData'
 
 let user1: User, user2: User
 const USER_ID_1 = 95277 // Davemon
@@ -99,17 +99,17 @@ describe('startgg User (has some pending)', () => {
     })
 
     // id
-    it('should get the correct id 1', function() {
+    it('should get the correct id 1', () => {
         this.timeout(5000)
         expect(user1.getId()).to.be.equal(USER_ID_1)
     })
-    it('should get the correct id 2', function() {
+    it('should get the correct id 2', () => {
         this.timeout(5000)
         expect(user2.getId()).to.be.equal(USER_ID_2)
     })
 
     // player gamertag
-    it('should get the correct player gamer tag 1', function() {
+    it('should get the correct player gamer tag 1', () => {
         this.timeout(5000)
         expect(user1.getPlayerGamertag()).to.be.equal('David Monster')
     })
@@ -128,8 +128,8 @@ describe('startgg User (has some pending)', () => {
         expect(user2.getSponsor()).to.be.equal('')
     })
 
-    //rankings (Deprecated)
-    it('should get the most recent standings back 1', async function() {
+    // rankings (Deprecated)
+    it('should get the most recent standings back 1', async () => {
         this.timeout(5000)
         expect(await user1.getRecentStandings()).to.have.deep.members(DAVID_MONSTER_PLACEMENTS)
         return true
@@ -140,27 +140,27 @@ describe('startgg User (has some pending)', () => {
         return true
     })
 
-    describe('mocked sophisticated functions unit tests', function() {
+    describe('mocked sophisticated functions unit tests', () => {
         // getRecentSets()
         it('getRecentSets(), should return 14 recent sets for Gluttony', async () => {
-            const myUser = new User(USER_ID_1, 'Great Bio', 'DIS', 'He/Him', null, null, null, null);
-            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedGluttonyRecentSetsResponse);
+            const myUser = new User(USER_ID_1, 'Great Bio', 'DIS', 'He/Him', null, null, null, null)
+            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedGluttonyRecentSetsResponse)
 
-            const res = await myUser.getRecentSets();
-            sinon.assert.calledOnce(niStub);
+            const res = await myUser.getRecentSets()
+            sinon.assert.calledOnce(niStub)
             expect(res.length).to.be.equal(14)
-            niStub.restore();
+            niStub.restore()
         })
 
         // getRecentStandings()
         it('getRecentStandings(), should return the correct standings for stubbed value for user', async () => {
-            const myUser = new User(USER_ID_1, 'Great Bio', 'DIS', 'He/Him', null, null, null, null);
-            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedUserRecentStandingsResponse);
+            const myUser = new User(USER_ID_1, 'Great Bio', 'DIS', 'He/Him', null, null, null, null)
+            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedUserRecentStandingsResponse)
 
-            const res = myUser.getRecentStandings();
-            sinon.assert.calledOnce(niStub);
+            const res = myUser.getRecentStandings()
+            sinon.assert.calledOnce(niStub)
             expect(JSON.stringify(await res)).to.be.equal(JSON.stringify(testData.mockedUserRecentStandingsRankingsResult))
-            niStub.restore();
+            niStub.restore()
         })
     })
 })

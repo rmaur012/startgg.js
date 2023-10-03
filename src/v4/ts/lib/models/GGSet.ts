@@ -422,7 +422,7 @@ export class GGSet extends EventEmitter implements IGGSet{
         return Game.parseFull(data)
     }
 
-    //TODO: Implement function + tests and fix the attendees query to match site schema
+    // TODO: Implement function + tests and fix the attendees query to match site schema
     public async getAttendees(): Promise<IAttendee[]> {
         log.info('Getting Attendees who participated in Set [%s]', this.id)
         const data: IGGSetSlotAttendeeData = await NI.query(queries.attendees, {id: this.id})
@@ -433,7 +433,7 @@ export class GGSet extends EventEmitter implements IGGSet{
         return attendees
     }
 
-    //TODO: Implement function + tests and fix the entrants query to match site schema
+    // TODO: Implement function + tests and fix the entrants query to match site schema
     public async getEntrants(): Promise<IEntrant[]> {
         log.info('Getting Entrants who participated in Set [%s]', this.id)
         const data: IGGSetSlotEntrantData = await NI.query(queries.entrants, {id: this.id})

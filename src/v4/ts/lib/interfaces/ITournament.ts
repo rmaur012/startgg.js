@@ -40,10 +40,10 @@ export interface ITournament{
     // searchAttendeesBySponsorTag(sponsorTag: string): Promise<IAttendee[] | null>
 
 
-	getSets(options?: IGGSetOptions) : Promise<IGGSet[]>
-	getEntrants(options?: IEntrantOptions) : Promise<IEntrant[]>
-	getAttendees(options?: IAttendeeOptions) : Promise<IAttendee[]>
-	/*
+    getSets(options?: IGGSetOptions) : Promise<IGGSet[]>
+    getEntrants(options?: IEntrantOptions) : Promise<IEntrant[]>
+    getAttendees(options?: IAttendeeOptions) : Promise<IAttendee[]>
+    /*
 	getIncompleteSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
 	getCompletedSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
 	getSetsXMinutesBack(minutesBack: number, options: IGGSet.SetOptions) : Promise<GGSet[]>

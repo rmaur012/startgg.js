@@ -73,7 +73,7 @@ export const set1GGSet = new GGSet(
     PlayerLite.parse(GGSet.parseDisplayScore(set1.displayScore!).tag1, set1.slots[0]),
     PlayerLite.parse(GGSet.parseDisplayScore(set1.displayScore!).tag2, set1.slots[1]),
     GGSet.parseDisplayScore(set1.displayScore!).score1,
-    GGSet.parseDisplayScore(set1.displayScore!).score2); // finish this
+    GGSet.parseDisplayScore(set1.displayScore!).score2) // finish this
 
 export const set2: IGGSetData = {
       id: 51002303,

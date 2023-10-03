@@ -156,10 +156,10 @@ describe('startgg VideoGame', () => {
         const jsonEncodingUTF8 : IVideoGameData = {
             id: 12345,
             name: 'GameName',
-            displayName: "Game Name",
-            slug: "game-name"
+            displayName: 'Game Name',
+            slug: 'game-name'
         }
-        const jsonEncodingUTF16 = "007b 000a 0020 0020 0020 0020 0069 0064 003a 0020 0031 0032 0033 0034 0035 002c 000a 0020 0020 0020 0020 006e 0061 006d 0065 003a 0020 0027 0047 0061 006d 0065 004e 0061 006d 0065 0027 002c 000a 0020 0020 0020 0020 0064 0069 0073 0070 006c 0061 0079 004e 0061 006d 0065 003a 0020 0022 0047 0061 006d 0065 0020 004e 0061 006d 0065 0022 002c 000a 0020 0020 0020 0020 0073 006c 0075 0067 003a 0020 0022 0067 0061 006d 0065 002d 006e 0061 006d 0065 0022 000a 007d"
+        const jsonEncodingUTF16 = '007b 000a 0020 0020 0020 0020 0069 0064 003a 0020 0031 0032 0033 0034 0035 002c 000a 0020 0020 0020 0020 006e 0061 006d 0065 003a 0020 0027 0047 0061 006d 0065 004e 0061 006d 0065 0027 002c 000a 0020 0020 0020 0020 0064 0069 0073 0070 006c 0061 0079 004e 0061 006d 0065 003a 0020 0022 0047 0061 006d 0065 0020 004e 0061 006d 0065 0022 002c 000a 0020 0020 0020 0020 0073 006c 0075 0067 003a 0020 0022 0067 0061 006d 0065 002d 006e 0061 006d 0065 0022 000a 007d'
         it('loadData() in utf8, should return json encoding', async () => {
             const vg = new VideoGame(jsonEncodingUTF8.id, jsonEncodingUTF8.name, jsonEncodingUTF8.displayName, jsonEncodingUTF8.slug)
             const result = vg.loadData(jsonEncodingUTF8, 'json')
