@@ -149,8 +149,7 @@ export class Tournament implements ITournament{
     public async getEvents(): Promise<IEvent[]> {
         log.info('Getting Events for Tournament [%s :: %s]', this.id, this.name)
         const data: ITournamentEventData = await NI.query(queries.tournamentEvents, {id: this.id})
-        const events = data.tournament.events.map(event => Event.parse(event))
-        return events
+        return data.tournament.events.map(event => Event.parse(event))
     }
 
     public async getPhases(): Promise<IPhase[]> {
@@ -317,7 +316,7 @@ export class Tournament implements ITournament{
         options: IAttendeeOptions = Attendee.getDefaultAttendeeOptions()
     ): Promise<IAttendee[]> {
 
-        // log.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name)
+        //log.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name)
         const data: ITournamentAttendeeData[] = await NI.paginatedQuery(
             `Tournament Attendee [${this.id} :: ${this.name}]`,
             queries.tournamentAttendees, {id: this.id},

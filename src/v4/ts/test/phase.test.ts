@@ -382,9 +382,6 @@ describe('startgg Phase', function() {
             niStub1.restore();
             niStub2.restore();
         })
-
-
-
     })
 })
 
