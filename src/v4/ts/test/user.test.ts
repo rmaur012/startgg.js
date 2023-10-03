@@ -100,19 +100,16 @@ describe('startgg User (has some pending)', () => {
 
     // id
     it('should get the correct id 1', () => {
-        this.timeout(5000)
         expect(user1.getId()).to.be.equal(USER_ID_1)
-    })
+    }).timeout(5000)
     it('should get the correct id 2', () => {
-        this.timeout(5000)
         expect(user2.getId()).to.be.equal(USER_ID_2)
-    })
+    }).timeout(5000)
 
     // player gamertag
     it('should get the correct player gamer tag 1', () => {
-        this.timeout(5000)
         expect(user1.getPlayerGamertag()).to.be.equal('David Monster')
-    })
+    }).timeout(5000)
     it('should get the correct player gamer tag 2', function() {
         this.timeout(5000)
         expect(user2.getPlayerGamertag()).to.be.equal('Mike G')
@@ -130,10 +127,9 @@ describe('startgg User (has some pending)', () => {
 
     // rankings (Deprecated)
     it('should get the most recent standings back 1', async () => {
-        this.timeout(5000)
         expect(await user1.getRecentStandings()).to.have.deep.members(DAVID_MONSTER_PLACEMENTS)
         return true
-    })
+    }).timeout(5000)
     it('should get the most recent standings back 2', async function() {
         this.timeout(5000)
         expect(await user2.getRecentStandings()).to.have.deep.members(MIKE_G_PLACEMENTS)
