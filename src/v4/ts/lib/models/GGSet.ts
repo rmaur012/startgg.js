@@ -449,7 +449,7 @@ export class GGSet extends EventEmitter implements IGGSet{
             return null
         }
         this.winnerId = winnerId
-        const data: IGGSetReportingMutationData = await NI.query(queries.reportingSetMutation, {this.id, winnerId})
+        const data: IGGSetReportingMutationData = await NI.query(queries.reportingSetMutation, {setId: this.id, winnerId})
         return data
     }
 }
