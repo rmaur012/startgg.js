@@ -13,6 +13,7 @@ import {
     IGGSetData,
     IGGSetDataFull,
     IGGSetOptions,
+    IGGSetReportingMutationData,
     IGGSetSlotAttendeeData,
     IGGSetSlotEntrantData,
     IGGSetSlots
@@ -442,5 +443,13 @@ export class GGSet extends EventEmitter implements IGGSet{
         return entrants
     }
 
-    // Statics
+    public async reportSet(winnerId: number): Promise<IGGSetReportingMutationData | null>{
+        if(winnerId !== this.player1.entrantId && winnerId !== this.player2.entrantId){
+            log.info('Players in Set with Entrant IDs [%s, %s] do not match the given Winner ID: [%s]', this.player1.entrantId, this.player2.entrantId, winnerId)
+            return null
+        }
+        this.winnerId = winnerId
+        const data: IGGSetReportingMutationData = await NI.query(queries.reportingSetMutation, {setId: this.id, winnerId})
+        return data
+    }
 }

@@ -1,5 +1,5 @@
 import * as Schema from './schema'
-
+// ---Queries---
 export const set = `query SetQuery($id: ID!){
 	set(id:$id){
 		${Schema.set}
@@ -38,3 +38,12 @@ export const attendees = `query SetParticipants($id: ID!){
 		}
 	}
 }`
+
+// ---Mutations---
+export const reportingSetMutation = `mutation reportSet($setId: ID!, $winnerId: ID!) {
+    reportBracketSet(setId: $setId, winnerId: $winnerId) {
+        id
+        state
+    }
+}
+`

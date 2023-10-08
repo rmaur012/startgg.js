@@ -489,6 +489,21 @@ describe('startgg Set (has still pending)', function() {
         await testGetAttendees(set2)
     })
 
+    // reportSet
+    it('should return null when winnerId given does not match either player entrant id', async () => {
+        const set = new GGSet(1, null, null, {id: null}, null, null, {id: null}, null, null, [], null, null, null, {entrantId: 77} as IPlayerLite, {entrantId: 88} as IPlayerLite, 0, 3)
+        const res = await set.reportSet(55)
+        expect(res).to.deep.equal(null)
+    })
+    // xit due to not being able to set up on site for builds
+    // Should be used for local testing with tournament you have
+    xit('should report set and return sets with states', async () => {
+        const set = new GGSet(66033074, null, null, {id: null}, null, null, {id: null}, null, null, [], null, null, null, {entrantId: 14494421} as IPlayerLite, {entrantId: 14494470} as IPlayerLite, 0, 3)
+        const res = await set.reportSet(14494470)
+        console.log(JSON.stringify(res))
+        expect(res).to.not.equal(null)
+    })
+
     describe('mocked sophisticated functions unit tests', () => {
         // getGames()
         it('getGames(), should return the correct mapping for stubbed value for single bracket', async () => {
