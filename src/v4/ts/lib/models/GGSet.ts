@@ -16,7 +16,8 @@ import {
     IGGSetReportingMutationData,
     IGGSetSlotAttendeeData,
     IGGSetSlotEntrantData,
-    IGGSetSlots
+    IGGSetSlots,
+    SelectionsEntry
 } from '../interfaces/IGGSet'
 import {IPlayerLite} from '../interfaces/IPlayerLite'
 
@@ -26,6 +27,59 @@ import {Game} from './Game'
 import {PlayerLite} from './PlayerLite'
 
 const DISPLAY_SCORE_REGEX = new RegExp(/^([\S\s]*) (\d{1,3}) - ([\S\s]*) (\d{1,3})$/)
+
+export class BracketSetGameDataInput {
+    constructor(
+        winnerId: number,
+        gameNum: number | null,
+        entrant1Score: number | null,
+        entrant2Score: number | null,
+        stageId: number | null,
+        selections: SelectionsEntry[] | null
+    ){
+        this.winnerId = winnerId
+        this.gameNum = gameNum
+        this.entrant1Score = entrant1Score
+        this.entrant2Score = entrant2Score
+        this.stageId = stageId
+        if(selections === null){
+            this.selections = []
+        } else {
+            this.selections = selections
+        }
+    }
+
+    public winnerId: number
+    public gameNum: number | null
+    public entrant1Score: number | null
+    public entrant2Score: number | null
+    public stageId: number | null
+    public selections: SelectionsEntry[] | null
+
+    public getWinnerId(): number{
+        return this.winnerId
+    }
+
+    public getGameNum(): number | null{
+        return this.gameNum
+    }
+
+    public getEntrant1Score(): number | null{
+        return this.entrant1Score
+    }
+
+    public getEntrant2Score(): number | null{
+        return this.entrant2Score
+    }
+
+    public getStage(): number | null{
+        return this.stageId
+    }
+
+    public getSelections(): SelectionsEntry[] | null{
+        return this.selections
+    }
+}
 
 export class GGSet extends EventEmitter implements IGGSet{
 
@@ -165,6 +219,7 @@ export class GGSet extends EventEmitter implements IGGSet{
     public player2: IPlayerLite
     public score1: number | null
     public score2: number | null
+    public gameData: BracketSetGameDataInput[]
 
     // SonarLint TODO: Need restructuring so we dont have as many parameters
     constructor(
@@ -192,7 +247,7 @@ export class GGSet extends EventEmitter implements IGGSet{
     ){
         super()
 
-        this.id =id
+        this.id = id
         this.completedAt = completedAt
         this.displayScore =	displayScore
         this.event = event
@@ -209,6 +264,7 @@ export class GGSet extends EventEmitter implements IGGSet{
         this.player2 = player2
         this.score1 = score1
         this.score2 = score2
+        this.gameData = []
     }
 
     // simple
@@ -278,6 +334,50 @@ export class GGSet extends EventEmitter implements IGGSet{
 
     public getCompletedAtTimestamp(): number | null {
         return this.completedAt
+    }
+
+    public getGameData(): BracketSetGameDataInput[] {
+        return this.gameData
+    }
+
+    public addGameResult(
+        entrant1Score: number,
+        entrant1CharacterId: number | null,
+        entrant2Score: number,
+        entrant2CharacterId: number | null,
+        stageId: number | null
+    ){
+        let selectWinnerId = null
+        const gameNumber = this.gameData.length + 1
+        const entrant1Selection: SelectionsEntry = {
+            entrantId: this.player1.entrantId,
+            characterId: entrant1CharacterId
+        }
+        const entrant2Selection: SelectionsEntry = {
+            entrantId: this.player2.entrantId,
+            characterId: entrant2CharacterId
+        }
+        if(entrant1Score > entrant2Score){
+            const finishedGame = new BracketSetGameDataInput(
+                this.player1.entrantId!,
+                gameNumber,
+                entrant1Score,
+                entrant2Score,
+                stageId,
+                [entrant1Selection, entrant2Selection]
+            )
+            this.gameData.push(finishedGame)
+        } else {
+            const finishedGame = new BracketSetGameDataInput(
+                this.player2.entrantId!,
+                gameNumber,
+                entrant1Score,
+                entrant2Score,
+                stageId,
+                [entrant1Selection, entrant2Selection]
+            )
+            this.gameData.push(finishedGame)
+        }
     }
 
     // Todo needs coverage
@@ -450,6 +550,16 @@ export class GGSet extends EventEmitter implements IGGSet{
         }
         this.winnerId = winnerId
         const data: IGGSetReportingMutationData = await NI.query(queries.reportingSetMutation, {setId: this.id, winnerId})
+        return data
+    }
+
+    public async reportFullSetWithData(winnerId: number): Promise<IGGSetReportingMutationData | null>{
+        if(winnerId !== this.player1.entrantId && winnerId !== this.player2.entrantId){
+            log.info('Players in Set with Entrant IDs [%s, %s] do not match the given Winner ID: [%s]', this.player1.entrantId, this.player2.entrantId, winnerId)
+            return null
+        }
+        this.winnerId = winnerId
+        const data: IGGSetReportingMutationData = await NI.query(queries.reportingFullSetWithDataMutation, {setId: this.id, winnerId, gameData: this.gameData})
         return data
     }
 }

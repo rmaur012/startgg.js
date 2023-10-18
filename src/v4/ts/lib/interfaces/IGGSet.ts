@@ -130,6 +130,11 @@ export interface IGGSetReportingMutationData{
     }[]
 }
 
+export interface SelectionsEntry{
+    entrantId: number | null
+    characterId: number | null
+}
+
 /*
 export interface IGGSetSlotAttendeeData{
 	participants: Array<IAttendeeData | null>

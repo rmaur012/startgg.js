@@ -47,3 +47,11 @@ export const reportingSetMutation = `mutation reportSet($setId: ID!, $winnerId: 
     }
 }
 `
+
+export const reportingFullSetWithDataMutation = `mutation reportSet($setId: ID!, $winnerId: ID!, $gameData: [BracketSetGameDataInput]) {
+    reportBracketSet(setId: $setId, winnerId: $winnerId, gameData: $gameData) {
+        id
+        state
+    }
+}
+`
