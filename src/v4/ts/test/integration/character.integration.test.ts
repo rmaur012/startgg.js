@@ -2,8 +2,8 @@ import chai from 'chai'
 import util from 'util'
 const {expect} = chai
 
-import {Character} from '../lib/models/Character'
-import Cache from '../lib/util/Cache'
+import {Character} from '../../lib/models/Character'
+import Cache from '../../lib/util/Cache'
 
 const MELEE_CHAR_COUNT = 28
 const PM_CHAR_COUNT = 43

@@ -3,14 +3,14 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
-import '../lib/util/ErrorHandler'
+import '../../lib/util/ErrorHandler'
 
 import {expect} from 'chai'
-import {Attendee} from '../lib/models/Attendee'
-import {Entrant} from '../lib/models/Entrant'
-import Initializer from '../lib/util/Initializer'
+import {Attendee} from '../../lib/models/Attendee'
+import {Entrant} from '../../lib/models/Entrant'
+import Initializer from '../../lib/util/Initializer'
 
-import * as testData from './data/player.testData'
+import * as testData from '../data/player.testData'
 let player1: Entrant, player2: Entrant
 
 describe('startgg Player (Entrant) Singles', () => {

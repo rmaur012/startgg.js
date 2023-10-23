@@ -3,8 +3,8 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
-import '../lib/util/ErrorHandler'
-import * as log from '../lib/util/Logger'
+import '../../lib/util/ErrorHandler'
+import * as log from '../../lib/util/Logger'
 
 import chai from 'chai'
 import cap from 'chai-as-promised'
@@ -12,13 +12,13 @@ import _ from 'lodash'
 chai.use(cap)
 const {expect} = chai
 
-import {IStreamQueue} from '../lib/interfaces/IStreamQueue'
+import {IStreamQueue} from '../../lib/interfaces/IStreamQueue'
 
-import {GGSet} from '../lib/models/GGSet'
-import {StreamQueue} from '../lib/models/StreamQueue'
-import {Streams} from '../lib/models/Streams'
-import Initializer from '../lib/util/Initializer'
-import * as testData from './data/streamQueue.testData'
+import {GGSet} from '../../lib/models/GGSet'
+import {StreamQueue} from '../../lib/models/StreamQueue'
+import {Streams} from '../../lib/models/Streams'
+import Initializer from '../../lib/util/Initializer'
+import * as testData from '../data/streamQueue.testData'
 
 let streamQueue1: IStreamQueue[] | null
 
@@ -27,7 +27,7 @@ const STREAM_QUEUE_TOURNAMENT_ID_1 = 6620
 describe('startgg StreamQueue', () => {
 
     before(async () => {
-        await Initializer(process.env.API_TOKEN!)
+        Initializer(process.env.API_TOKEN!)
         streamQueue1 = await StreamQueue.get(STREAM_QUEUE_TOURNAMENT_ID_1)
         expect(streamQueue1).to.not.be.null
         return true

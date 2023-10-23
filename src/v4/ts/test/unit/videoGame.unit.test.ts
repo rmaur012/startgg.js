@@ -1,12 +1,11 @@
-import '../lib/util/ErrorHandler'
+import '../../lib/util/ErrorHandler'
 
 import chai from 'chai'
 const { expect } = chai
 
-import {IVideoGame, IVideoGameData} from '../lib/interfaces/IVideoGame'
-
-import { VideoGame } from '../lib/models/VideoGame'
-import Cache from '../lib/util/Cache'
+import {IVideoGame, IVideoGameData} from '../../lib/interfaces/IVideoGame'
+import { VideoGame } from '../../lib/models/VideoGame'
+import Cache from '../../lib/util/Cache'
 
 const expected = {
     Melee: {

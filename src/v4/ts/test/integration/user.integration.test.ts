@@ -3,14 +3,14 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
-import '../lib/util/ErrorHandler'
+import '../../lib/util/ErrorHandler'
 
 import {expect} from 'chai'
 import sinon from 'sinon'
-import {User} from '../lib/models/User'
-import Initializer from '../lib/util/Initializer'
-import NI from '../lib/util/NetworkInterface'
-import * as testData from './data/user.testData'
+import {User} from '../../lib/models/User'
+import Initializer from '../../lib/util/Initializer'
+import NI from '../../lib/util/NetworkInterface'
+import * as testData from '../data/user.testData'
 
 let user1: User, user2: User
 const USER_ID_1 = 95277 // Davemon
@@ -134,29 +134,5 @@ describe('startgg User (has some pending)', () => {
         this.timeout(5000)
         expect(await user2.getRecentStandings()).to.have.deep.members(MIKE_G_PLACEMENTS)
         return true
-    })
-
-    describe('mocked sophisticated functions unit tests', () => {
-        // getRecentSets()
-        it('getRecentSets(), should return 14 recent sets for Gluttony', async () => {
-            const myUser = new User(USER_ID_1, 'Great Bio', 'DIS', 'He/Him', null, null, null, null)
-            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedGluttonyRecentSetsResponse)
-
-            const res = await myUser.getRecentSets()
-            sinon.assert.calledOnce(niStub)
-            expect(res.length).to.be.equal(14)
-            niStub.restore()
-        })
-
-        // getRecentStandings()
-        it('getRecentStandings(), should return the correct standings for stubbed value for user', async () => {
-            const myUser = new User(USER_ID_1, 'Great Bio', 'DIS', 'He/Him', null, null, null, null)
-            const niStub = sinon.mock(NI).expects('query').once().returns(testData.mockedUserRecentStandingsResponse)
-
-            const res = myUser.getRecentStandings()
-            sinon.assert.calledOnce(niStub)
-            expect(JSON.stringify(await res)).to.be.equal(JSON.stringify(testData.mockedUserRecentStandingsRankingsResult))
-            niStub.restore()
-        })
     })
 })

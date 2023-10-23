@@ -5,8 +5,8 @@ config({path: ROOT})
 
 import _ from 'lodash'
 import moment from 'moment'
-import '../lib/util/ErrorHandler'
-import * as log from '../lib/util/Logger'
+import '../../lib/util/ErrorHandler'
+import * as log from '../../lib/util/Logger'
 
 import chai from 'chai'
 import cap from 'chai-as-promised'
@@ -14,17 +14,17 @@ import sinon from 'sinon'
 chai.use(cap)
 const {expect} = chai
 
-import {IPhase} from '../lib/interfaces/IPhase'
-import {IPhaseGroup} from '../lib/interfaces/IPhaseGroup'
+import {IPhase} from '../../lib/interfaces/IPhase'
+import {IPhaseGroup} from '../../lib/interfaces/IPhaseGroup'
 
-import {Attendee} from '../lib/models/Attendee'
-import {Entrant} from '../lib/models/Entrant'
-import {GGSet} from '../lib/models/GGSet'
-import {Phase} from '../lib/models/Phase'
-import {PhaseGroup} from '../lib/models/PhaseGroup'
-import Initializer from '../lib/util/Initializer'
-import NI from '../lib/util/NetworkInterface'
-import * as testData from './data/phase.testData'
+import {Attendee} from '../../lib/models/Attendee'
+import {Entrant} from '../../lib/models/Entrant'
+import {GGSet} from '../../lib/models/GGSet'
+import {Phase} from '../../lib/models/Phase'
+import {PhaseGroup} from '../../lib/models/PhaseGroup'
+import Initializer from '../../lib/util/Initializer'
+import NI from '../../lib/util/NetworkInterface'
+import * as testData from '../data/phase.testData'
 
 const LOG_LEVEL = log.levels.DEBUG
 
@@ -340,49 +340,6 @@ describe('startgg Phase', function() {
 // 		clock.restore()
 // 		return true
 // 	})
-
-    describe('mocked sophisticated functions unit tests', () => {
-        // getPhaseGroups()
-        // getSeeds()
-        // getEntrants()
-        it('getEntrants(), should return the correct entrants for stubbed value for single bracket', async () => {
-            const myPhase = new Phase(ID3, EVENT_ID_3, 'Top 8', 8, 1)
-            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedTop8PhasePaginatedDataQueryResponse)
-            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedTop8GetEntrantsClusterQueryResponse)
-
-            const res = myPhase.getEntrants()
-            sinon.assert.calledOnce(niStub1)
-            expect(await res).to.deep.equal(testData.expectedTop8PhaseGetEntrantsReturnValue)
-            niStub1.restore()
-            niStub2.restore()
-        })
-
-        // getAttendees()
-        it('getAttendees(), should return the correct attendees for stubbed value for single bracket', async () => {
-            const myPhase = new Phase(ID3, EVENT_ID_3, 'Top 8', 8, 1)
-            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedTop8PhasePaginatedDataQueryResponse)
-            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedTop8GetAttendeesClusterQueryResponse)
-
-            const res = myPhase.getAttendees()
-            sinon.assert.calledOnce(niStub1)
-            expect(await res).to.deep.equal(testData.expectedTop8PhaseGetAttendeesReturnValue)
-            niStub1.restore()
-            niStub2.restore()
-        })
-
-        // getSets
-        it('getSets(), should return the correct sets for stubbed value for single bracket', async () => {
-            const myPhase = new Phase(ID3, EVENT_ID_3, 'Top 8', 8, 1)
-            const niStub1 = sinon.mock(NI).expects('query').once().returns(testData.mockedTop8PhasePaginatedDataQueryResponse)
-            const niStub2 = sinon.mock(NI).expects('clusterQuery').once().returns(testData.mockedTop8GetSetsClusterQueryResponse)
-
-            const res = myPhase.getSets()
-            sinon.assert.calledOnce(niStub1)
-            expect(await res).to.deep.equal(testData.expectedTop8PhaseGetSetsReturnValue)
-            niStub1.restore()
-            niStub2.restore()
-        })
-    })
 })
 
 async function testSets(phase: IPhase, expected: number){
