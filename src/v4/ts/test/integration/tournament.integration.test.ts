@@ -5,12 +5,10 @@ config({path: ROOT})
 
 import _ from 'lodash'
 import '../../lib/util/ErrorHandler'
-import * as log from '../../lib/util/Logger'
 
 import chai from 'chai'
 import cap from 'chai-as-promised'
 import moment from 'moment'
-import sinon from 'sinon'
 chai.use(cap)
 const {expect} = chai
 
@@ -30,7 +28,6 @@ import {Phase} from '../../lib/models/Phase'
 import {PhaseGroup} from '../../lib/models/PhaseGroup'
 import {Tournament} from '../../lib/models/Tournament'
 import Initializer from '../../lib/util/Initializer'
-import NI from '../../lib/util/NetworkInterface'
 import * as testData from '../data/tournament.testData'
 
 let tournament1: ITournament, tournament2: ITournament, tournament4: ITournament

@@ -18,11 +18,11 @@ import NI from '../../lib/util/NetworkInterface'
 import * as gameData from '../data/games.testData'
 import * as testData from '../data/sets.testData'
 
-let set1: IGGSet, set2: IGGSet
+// let set1: IGGSet, set2: IGGSet
 const SET_ID_1 = +'54170233'
 const SET_ID_2 = +'51002303'
 
-describe('startgg Set (has still pending)', function() {
+describe('startgg Set (has still pending)', () => {
     // getting winner id
     describe('getWinnerId() unit tests', () => {
         it('should return player 1 when winner id is player 1`s entrant id', async () => {
@@ -241,7 +241,6 @@ describe('startgg Set (has still pending)', function() {
             currSet.score1 = 3
             currSet.score2 = 0
 
-            const res = currSet.getLoserScore()
             expect(currSet.getLoserScore()).to.be.equal(currSet.score2)
         })
 

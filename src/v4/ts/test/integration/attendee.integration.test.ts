@@ -4,7 +4,6 @@ import {config} from 'dotenv'
 config({path: ROOT})
 
 import {expect} from 'chai'
-import sinon from 'sinon'
 
 import {IAttendee} from '../../lib/interfaces/IAttendee'
 
@@ -13,7 +12,6 @@ import {Phase} from '../../lib/models/Phase'
 import {PhaseGroup} from '../../lib/models/PhaseGroup'
 import {User} from '../../lib/models/User'
 import Initializer from '../../lib/util/Initializer'
-import NI from '../../lib/util/NetworkInterface'
 
 import * as testData from '../data/attendee.testData'
 let attendee1: IAttendee, attendee2: IAttendee

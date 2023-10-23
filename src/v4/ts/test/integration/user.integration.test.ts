@@ -6,10 +6,8 @@ config({path: ROOT})
 import '../../lib/util/ErrorHandler'
 
 import {expect} from 'chai'
-import sinon from 'sinon'
 import {User} from '../../lib/models/User'
 import Initializer from '../../lib/util/Initializer'
-import NI from '../../lib/util/NetworkInterface'
 import * as testData from '../data/user.testData'
 
 let user1: User, user2: User

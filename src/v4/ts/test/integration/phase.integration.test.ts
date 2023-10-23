@@ -4,13 +4,11 @@ import {config} from 'dotenv'
 config({path: ROOT})
 
 import _ from 'lodash'
-import moment from 'moment'
 import '../../lib/util/ErrorHandler'
 import * as log from '../../lib/util/Logger'
 
 import chai from 'chai'
 import cap from 'chai-as-promised'
-import sinon from 'sinon'
 chai.use(cap)
 const {expect} = chai
 
@@ -23,7 +21,6 @@ import {GGSet} from '../../lib/models/GGSet'
 import {Phase} from '../../lib/models/Phase'
 import {PhaseGroup} from '../../lib/models/PhaseGroup'
 import Initializer from '../../lib/util/Initializer'
-import NI from '../../lib/util/NetworkInterface'
 import * as testData from '../data/phase.testData'
 
 const LOG_LEVEL = log.levels.DEBUG

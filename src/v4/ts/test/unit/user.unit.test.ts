@@ -11,7 +11,6 @@ import {User} from '../../lib/models/User'
 import NI from '../../lib/util/NetworkInterface'
 import * as testData from '../data/user.testData'
 
-let user1: User, user2: User
 const USER_ID_1 = 95277 // Davemon
 const USER_ID_2 = 25927  // Mike G
 const DAVID_MONSTER_PLACEMENTS = [

@@ -16,8 +16,6 @@ import {Tournament} from '../../lib/models/Tournament'
 import NI from '../../lib/util/NetworkInterface'
 import * as testData from '../data/tournament.testData'
 
-let tournament1: ITournament, tournament2: ITournament, tournament4: ITournament
-
 const TOURNAMENT_ID_1 = 432884
 const TOURNAMENT_SLUG_1 = 'tournament/port-priority-7'
 
@@ -30,7 +28,7 @@ const TOURNAMENT_SLUG_3 = 'tournament/let-s-make-big-moves-2023'
 const TOURNAMENT_ID_4 = 594032
 const TOURNAMENT_SLUG_4 = 'tournament/unfunstuff-smash-ultimate-unfunday-mondays-week-40'
 
-describe('startgg Tournament', function() {
+describe('startgg Tournament', () => {
     describe('mocked sophisticated functions unit tests', () => {
         // getEvents()
         it('getEvents(), should return the correct events for stubbed value for single bracket', async () => {
@@ -50,7 +48,7 @@ describe('startgg Tournament', function() {
 
             const res = await myTournament.getPhases()
             sinon.assert.calledOnce(niStub1)
-            expect(await res).to.deep.equal(testData.expectedGetPhasesReturnValue)
+            expect(res).to.deep.equal(testData.expectedGetPhasesReturnValue)
             niStub1.restore()
         })
 

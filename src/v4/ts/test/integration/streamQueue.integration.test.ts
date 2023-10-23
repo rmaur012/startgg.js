@@ -4,11 +4,9 @@ import {config} from 'dotenv'
 config({path: ROOT})
 
 import '../../lib/util/ErrorHandler'
-import * as log from '../../lib/util/Logger'
 
 import chai from 'chai'
 import cap from 'chai-as-promised'
-import _ from 'lodash'
 chai.use(cap)
 const {expect} = chai
 

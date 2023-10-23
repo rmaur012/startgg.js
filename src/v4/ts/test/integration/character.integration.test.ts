@@ -1,5 +1,4 @@
 import chai from 'chai'
-import util from 'util'
 const {expect} = chai
 
 import {Character} from '../../lib/models/Character'

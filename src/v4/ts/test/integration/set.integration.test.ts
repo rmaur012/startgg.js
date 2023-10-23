@@ -8,7 +8,6 @@ import '../../lib/util/ErrorHandler'
 import chai from 'chai'
 import cap from 'chai-as-promised'
 import moment from 'moment'
-import sinon from 'sinon'
 chai.use(cap)
 const {expect} = chai
 
@@ -22,8 +21,6 @@ import {Entrant} from '../../lib/models/Entrant'
 import {Game} from '../../lib/models/Game'
 import {GGSet} from '../../lib/models/GGSet'
 import Initializer from '../../lib/util/Initializer'
-import NI from '../../lib/util/NetworkInterface'
-import * as testDataEvents from '../data/event.testData'
 import * as gameData from '../data/games.testData'
 import * as testData from '../data/sets.testData'
 

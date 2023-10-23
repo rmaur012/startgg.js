@@ -8,7 +8,6 @@ import '../../lib/util/ErrorHandler'
 
 import chai from 'chai'
 import cap from 'chai-as-promised'
-import sinon from 'sinon'
 chai.use(cap)
 const {expect} = chai
 
@@ -25,7 +24,6 @@ import {GGSet} from '../../lib/models/GGSet'
 import {Phase} from '../../lib/models/Phase'
 import {PhaseGroup} from '../../lib/models/PhaseGroup'
 import Initializer from '../../lib/util/Initializer'
-import NI from '../../lib/util/NetworkInterface'
 import * as testData from '../data/event.testData'
 
 let event1: IEvent, event2: IEvent

@@ -17,8 +17,6 @@ import {Event} from '../../lib/models/Event'
 import NI from '../../lib/util/NetworkInterface'
 import * as testData from '../data/event.testData'
 
-let event1: IEvent, event2: IEvent
-
 const EVENT_1_ID = 822160
 const EVENT_1_SLUG = 'tournament/nxt-lvl-55/event/ultimate-singles'
 const EVENT_1_TOURNAMENT_SLUG='nxt-lvl-55'
@@ -47,7 +45,7 @@ const TOP_8_LABELS = [
 ]
 const GRAND_FINAL_RESET_TOKEN = 'Grand Final Reset'
 
-describe('startgg Event', function() {
+describe('startgg Event', () => {
     describe('mocked sophisticated functions unit tests', () => {
         // getPhases()
         it('getPhases(), should return the correct mapping for stubbed value for single bracket', async () => {

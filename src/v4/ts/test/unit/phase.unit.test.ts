@@ -14,8 +14,8 @@ const {expect} = chai
 
 import {IPhase} from '../../lib/interfaces/IPhase'
 import {Phase} from '../../lib/models/Phase'
-import * as testData from '../data/phase.testData'
 import NI from '../../lib/util/NetworkInterface'
+import * as testData from '../data/phase.testData'
 
 const LOG_LEVEL = log.levels.DEBUG
 
@@ -40,12 +40,9 @@ const PHASE_3_SET_COUNT = 11
 const PHASE_3_ENTRANT_COUNT = 8
 const PHASE_3_ATTENDEE_COUNT = 8
 
-let phase1: IPhase
-let phase2: IPhase
-let phase3: IPhase
 const concurrency = 4
 
-describe('startgg Phase', function() {
+describe('startgg Phase', () => {
     describe('mocked sophisticated functions unit tests', () => {
         // getPhaseGroups()
         // getSeeds()

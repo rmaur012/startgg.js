@@ -11,7 +11,6 @@ import {Attendee} from '../../lib/models/Attendee'
 import NI from '../../lib/util/NetworkInterface'
 
 import * as testData from '../data/attendee.testData'
-let attendee1: IAttendee, attendee2: IAttendee
 
 describe('startgg Attendee (Participant)', () => {
     describe('mocked, sophisticated functions unit tests', () => {
