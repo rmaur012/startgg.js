@@ -88,7 +88,7 @@ describe('startgg User (has some pending)', () => {
 
             const res = await myUser.getRecentSets()
             sinon.assert.calledOnce(niStub)
-            expect(res.length).to.be.equal(15) // 14
+            expect(res.length).to.be.equal(14)
             niStub.restore()
         })
 
