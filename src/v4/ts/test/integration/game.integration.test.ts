@@ -4,15 +4,15 @@ import {config} from 'dotenv'
 config({path: ROOT})
 import {expect} from 'chai'
 
-import '../lib/util/ErrorHandler'
+import '../../lib/util/ErrorHandler'
 
-import {IGame, ISelections} from '../lib/interfaces/IGame'
+import {IGame, ISelections} from '../../lib/interfaces/IGame'
 
-import {Game} from '../lib/models/Game'
-import {Selections} from '../lib/models/Selections'
-import Initializer from '../lib/util/Initializer'
+import {Game} from '../../lib/models/Game'
+import {Selections} from '../../lib/models/Selections'
+import Initializer from '../../lib/util/Initializer'
 
-import * as testData from './data/games.testData'
+import * as testData from '../data/games.testData'
 let games1: IGame[], games2: IGame[]
 let selections1: ISelections, selections2: ISelections
 

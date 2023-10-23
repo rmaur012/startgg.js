@@ -3,7 +3,7 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
-import '../lib/util/ErrorHandler'
+import '../../lib/util/ErrorHandler'
 // import * as log from '../lib/util/Logger'
 
 import chai from 'chai'
@@ -11,11 +11,11 @@ import cap from 'chai-as-promised'
 chai.use(cap)
 const {expect} = chai
 
-import {IStreams} from '../lib/interfaces/IStreams'
+import {IStreams} from '../../lib/interfaces/IStreams'
 
-import {Streams} from '../lib/models/Streams'
-import Initializer from '../lib/util/Initializer'
-import * as testData from './data/stream.testData'
+import {Streams} from '../../lib/models/Streams'
+import Initializer from '../../lib/util/Initializer'
+import * as testData from '../data/stream.testData'
 
 let stream1: IStreams, stream2: IStreams, stream3: IStreams
 
