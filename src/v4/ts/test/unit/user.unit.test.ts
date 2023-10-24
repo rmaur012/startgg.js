@@ -3,16 +3,14 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
-import '../lib/util/ErrorHandler'
+import '../../lib/util/ErrorHandler'
 
 import {expect} from 'chai'
 import sinon from 'sinon'
-import {User} from '../lib/models/User'
-import Initializer from '../lib/util/Initializer'
-import NI from '../lib/util/NetworkInterface'
-import * as testData from './data/user.testData'
+import {User} from '../../lib/models/User'
+import NI from '../../lib/util/NetworkInterface'
+import * as testData from '../data/user.testData'
 
-let user1: User, user2: User
 const USER_ID_1 = 95277 // Davemon
 const USER_ID_2 = 25927  // Mike G
 const DAVID_MONSTER_PLACEMENTS = [
@@ -82,60 +80,6 @@ const MIKE_G_PLACEMENTS = [
       ]
 
 describe('startgg User (has some pending)', () => {
-    before(async function() {
-        this.timeout(15000)
-        Initializer(process.env.API_TOKEN!)
-        user1 = await User.getById(USER_ID_1)
-        user2 = await User.getById(USER_ID_2)
-        return true
-    })
-
-    // equality
-    it('should be the expected User object', () => {
-        expect(user1).to.deep.equal(User.parse(testData.user1))
-    })
-    it('should be the expected User object', () => {
-        expect(user2).to.deep.equal(User.parse(testData.user2))
-    })
-
-    // id
-    it('should get the correct id 1', () => {
-        expect(user1.getId()).to.be.equal(USER_ID_1)
-    }).timeout(5000)
-    it('should get the correct id 2', () => {
-        expect(user2.getId()).to.be.equal(USER_ID_2)
-    }).timeout(5000)
-
-    // player gamertag
-    it('should get the correct player gamer tag 1', () => {
-        expect(user1.getPlayerGamertag()).to.be.equal('David Monster')
-    }).timeout(5000)
-    it('should get the correct player gamer tag 2', function() {
-        this.timeout(5000)
-        expect(user2.getPlayerGamertag()).to.be.equal('Mike G')
-    })
-
-    // prefix
-    it('should get the correct sponsor 1', function() {
-        this.timeout(5000)
-        expect(user1.getSponsor()).to.be.equal('eski')
-    })
-    it('should get the correct sponsor 2', function() {
-        this.timeout(5000)
-        expect(user2.getSponsor()).to.be.equal('')
-    })
-
-    // rankings (Deprecated)
-    it('should get the most recent standings back 1', async () => {
-        expect(await user1.getRecentStandings()).to.have.deep.members(DAVID_MONSTER_PLACEMENTS)
-        return true
-    }).timeout(5000)
-    it('should get the most recent standings back 2', async function() {
-        this.timeout(5000)
-        expect(await user2.getRecentStandings()).to.have.deep.members(MIKE_G_PLACEMENTS)
-        return true
-    })
-
     describe('mocked sophisticated functions unit tests', () => {
         // getRecentSets()
         it('getRecentSets(), should return 14 recent sets for Gluttony', async () => {

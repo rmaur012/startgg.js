@@ -3,7 +3,7 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
-import '../lib/util/ErrorHandler'
+import '../../lib/util/ErrorHandler'
 
 import chai from 'chai'
 import cap from 'chai-as-promised'
@@ -11,16 +11,16 @@ import moment from 'moment'
 chai.use(cap)
 const {expect} = chai
 
-import {IPhaseGroup} from '../lib/interfaces/IPhaseGroup'
+import {IPhaseGroup} from '../../lib/interfaces/IPhaseGroup'
 
-import {Attendee} from '../lib/models/Attendee'
-import {Entrant} from '../lib/models/Entrant'
-import {GGSet} from '../lib/models/GGSet'
-import {PhaseGroup} from '../lib/models/PhaseGroup'
-import {Seed} from '../lib/models/Seed'
-import Initializer from '../lib/util/Initializer'
-import * as log from '../lib/util/Logger'
-import * as testData from './data/phaseGroup.testData'
+import {Attendee} from '../../lib/models/Attendee'
+import {Entrant} from '../../lib/models/Entrant'
+import {GGSet} from '../../lib/models/GGSet'
+import {PhaseGroup} from '../../lib/models/PhaseGroup'
+import {Seed} from '../../lib/models/Seed'
+import Initializer from '../../lib/util/Initializer'
+import * as log from '../../lib/util/Logger'
+import * as testData from '../data/phaseGroup.testData'
 
 let phaseGroup1: IPhaseGroup
 let phaseGroup2: IPhaseGroup

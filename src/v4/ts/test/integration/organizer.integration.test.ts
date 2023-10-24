@@ -3,19 +3,19 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
-import '../lib/util/ErrorHandler'
-// import * as log from '../lib/util/Logger'
+import '../../lib/util/ErrorHandler'
+// import * as log from '../../lib/util/Logger'
 
 import chai from 'chai'
 import cap from 'chai-as-promised'
 chai.use(cap)
 const {expect} = chai
 
-import {IOrganizer} from '../lib/interfaces/IOrganizer'
+import {IOrganizer} from '../../lib/interfaces/IOrganizer'
 
-import {Organizer} from '../lib/models/Organizer'
-import Initializer from '../lib/util/Initializer'
-import * as testData from './data/tournament.testData'
+import {Organizer} from '../../lib/models/Organizer'
+import Initializer from '../../lib/util/Initializer'
+import * as testData from '../data/tournament.testData'
 
 let org1: IOrganizer, org2: IOrganizer
 

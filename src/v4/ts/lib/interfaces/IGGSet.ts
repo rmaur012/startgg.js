@@ -56,6 +56,7 @@ export interface IGGSet{
     getGames(): Promise<IGame[]>
     getEntrants(): Promise<IEntrant[]>
     getAttendees(): Promise<IAttendee[]>
+    reportSet(winnerId: number): Promise<IGGSetReportingMutationData | null>
 
     // getBracketId() : number | string
     // getMidsizeRoundText() : string
@@ -120,6 +121,13 @@ export interface IGGSetSlotAttendeeData{
             }
         }[]
     }
+}
+
+export interface IGGSetReportingMutationData{
+    reportBracketSet: {
+        id: number
+        state: number
+    }[]
 }
 
 /*

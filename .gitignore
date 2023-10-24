@@ -10,3 +10,4 @@ mochawesome-report/
 *.tgz
 .env
 .DS_Store
+Feature-POA.txt
