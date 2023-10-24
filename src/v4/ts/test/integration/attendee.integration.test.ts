@@ -1,5 +1,5 @@
 import path from 'path'
-const ROOT = path.join(__dirname, '..', '..', '..', '..', '..', '.env')
+const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
